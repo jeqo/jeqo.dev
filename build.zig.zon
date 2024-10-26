@@ -1,0 +1,11 @@
+.{
+    .name = "jeqo-website",
+    .version = "0.1.0",
+    .dependencies = .{
+        .zine = .{
+            .url = "git+https://github.com/kristoff-it/zine?ref=v0.7.2#4797b43d95fb92bb6080eb5cfa5fdbce9f2cb700",
+            .hash = "1220cd3683f9558ffff17346d49253cb54f5676afbddd381164a7760d3f62a0161fd",
+        },
+    },
+    .paths = .{"."},
+}

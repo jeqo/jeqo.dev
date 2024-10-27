@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head id="head">
+    <title id="title">
+      <super>
+      | @jeqo
+    </title>
+    <super>
+  </head>
+  <body>
+    <nav id="menu">
+    </nav>
+    <div id="content">
+      <super>
+    </div>
+  </body>
+</html>

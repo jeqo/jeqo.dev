@@ -1,7 +1,7 @@
 ---
-.title = "Homepage",
+.title = "@jeqo",
 .date = @date("2020-07-06T00:00:00"),
-.author = "Sample Author",
+.author = "jeqo",
 .layout = "home.shtml",
 .draft = false,
 --- 

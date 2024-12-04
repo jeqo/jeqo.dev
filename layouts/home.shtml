@@ -2,6 +2,9 @@
 <title id="title" :text="$site.title"></title>
 <head id="head"></head>
 <div id="content">
-  <h1 :text="$page.title"></h1>
-  <div :html="$page.content()"></div>
+  <ul :loop="$page.subpages()">
+    <li>
+      <a href="$loop.it.link()" :text="$loop.it.title"></a>
+    </li>
+  </ul>
 </div>

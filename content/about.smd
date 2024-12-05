@@ -1,8 +1,9 @@
 ---
-.title = "@jeqo",
+.title = "about",
 .date = @date("2020-07-06T00:00:00"),
 .author = "jeqo",
 .layout = "home.shtml",
 .draft = false,
 --- 
 
+Test

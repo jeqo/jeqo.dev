@@ -9,6 +9,7 @@ pub fn build(b: *std.Build) !void {
         .layouts_dir_path = "layouts",
         .assets_dir_path = "assets",
         .static_assets = &.{
+            "styles/main.css",
             "fonts/Spectral-Regular.woff2",
             "fonts/Spectral-Italic.woff2",
             "fonts/Spectral-SemiBold.woff2",

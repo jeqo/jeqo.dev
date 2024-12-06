@@ -7,10 +7,9 @@
     <p>data streaming, observability, and random stuff</p>
   </header>
   <main>
-    <ul :loop="$page.subpages()">
-      <li>
-        <a href="$loop.it.link()" :text="$loop.it.title"></a>
-      </li>
-    </ul>
+    <div :loop="$page.subpages()">
+      <a class="post-link" href="$loop.it.link()" :text="$loop.it.title"></a>
+      <span class="post-byline" :text="$loop.it.date.format('January 02, 2006')"></span>
+    </div>
   </main>
 </body>

@@ -11,9 +11,13 @@ pub fn build(b: *std.Build) !void {
         .static_assets = &.{
             "styles/main.css",
             "fonts/Spectral-Regular.woff2",
+            "fonts/Spectral-Medium.woff2",
+            "fonts/Spectral-Light.woff2",
+            "fonts/Spectral-ExtraLight.woff2",
             "fonts/Spectral-Italic.woff2",
             "fonts/Spectral-SemiBold.woff2",
             "fonts/JetBrainsMono-Regular.woff2",
+            "fonts/JetBrainsMono-Medium.woff2",
             "fonts/JetBrainsMono-Bold.woff2",
         },
     });

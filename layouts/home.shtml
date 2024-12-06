@@ -1,10 +1,16 @@
 <extend template="base.shtml">
 <title id="title" :text="$site.title"></title>
 <head id="head"></head>
-<div id="content">
-  <ul :loop="$page.subpages()">
-    <li>
-      <a href="$loop.it.link()" :text="$loop.it.title"></a>
-    </li>
-  </ul>
-</div>
+<body id="body">
+  <header class="home-header">
+    <h1>@jeqo</h1>
+    <p>data streaming, observability, and random stuff</p>
+  </header>
+  <main>
+    <ul :loop="$page.subpages()">
+      <li>
+        <a href="$loop.it.link()" :text="$loop.it.title"></a>
+      </li>
+    </ul>
+  </main>
+</body>

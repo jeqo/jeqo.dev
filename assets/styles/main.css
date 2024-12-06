@@ -1,162 +1,240 @@
 /* Spectral font embedding */
 @font-face {
-    font-family: 'Spectral';
-    src: url('/fonts/Spectral-Regular.woff2') format('woff2');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
+  font-family: 'Spectral';
+  src: url('/fonts/Spectral-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Spectral';
-    src: url('/fonts/Spectral-Italic.woff2') format('woff2');
-    font-weight: 400;
-    font-style: italic;
-    font-display: swap;
+  font-family: 'Spectral';
+  src: url('/fonts/Spectral-Medium.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Spectral';
-    src: url('/fonts/Spectral-SemiBold.woff2') format('woff2');
-    font-weight: 600;
-    font-style: normal;
-    font-display: swap;
+  font-family: 'Spectral';
+  src: url('/fonts/Spectral-Light.woff2') format('woff2');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Spectral';
+  src: url('/fonts/Spectral-ExtraLight.woff2') format('woff2');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Spectral';
+  src: url('/fonts/Spectral-Italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Spectral';
+  src: url('/fonts/Spectral-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
 }
 
 /* JetBrains Mono font embedding */
 @font-face {
-    font-family: 'JetBrains Mono';
-    src: url('/fonts/JetBrainsMono-Regular.woff2') format('woff2');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/JetBrainsMono-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'JetBrains Mono';
-    src: url('/fonts/JetBrainsMono-Bold.woff2') format('woff2');
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/JetBrainsMono-Medium.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/JetBrainsMono-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
 }
 
 /* Reset default styles */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-/* Base styles */
+/* Base styles with sticky footer setup */
 html, body {
-    height: 100%;
+  height: 100%;
 }
 
 body {
-    font-family: 'Spectral', serif;
-    line-height: 1.6;
-    color: #333;
-    display: flex;
-    flex-direction: column;
+  font-family: 'Spectral', serif;
+  line-height: 1.6;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
-.container {
-    flex: 1 0 auto;
-    max-width: 720px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 2rem;
+/* Content containers */
+header, main, footer {
+  width: 100%;
+}
+
+/* Home page header */
+header {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+header.home-header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-header p {
+  font-weight: 200;
+  font-size: 1rem;
+}
+
+/* Post header */
+header.post-header {
+  max-width: none;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+
+.post-header img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(8px) brightness(0.7);
+  transform: scale(1.1); /* Prevent blur from showing edges */
+}
+
+.post-header-content {
+  max-width: 720px;
+  width: 100%;
+  padding: 2rem;
+  position: relative;
+  z-index: 3;
+}
+
+.post-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+main {
+  flex: 1 0 auto;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem;
 }
 
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'JetBrains Mono', monospace;
-    margin: 2rem 0 1rem;
-    line-height: 1.3;
+  font-family: 'JetBrains Mono', monospace;
+  margin: 2rem 0 1rem;
+  line-height: 1.3;
 }
 
 h1 { font-size: 2rem; }
-h2 { font-size: 1.8rem; }
-h3 { font-size: 1.75rem; }
+h2 { font-size: 1.75rem; }
+h3 { font-size: 1.5rem; }
 
 p {
-    margin-bottom: 1.5rem;
-    font-size: 1.125rem;
+  margin-bottom: 1.5rem;
+  font-size: 1.25rem;
 }
 
 /* Code blocks */
 pre, code {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.9rem;
-    background: #f5f5f5;
-    border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9rem;
+  background: #f5f5f5;
+  border-radius: 4px;
 }
 
 pre {
-    padding: 1rem;
-    overflow-x: auto;
-    margin: 1.5rem 0;
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
 }
 
 code {
-    padding: 0.2rem 0.4rem;
+  padding: 0.2rem 0.4rem;
 }
 
 /* Links */
 a {
-    color: #2c5282;
-    text-decoration: none;
-    border-bottom: 1px solid transparent;
-    transition: border-color 0.2s ease;
+  color: #2c5282;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
 }
 
 a:hover {
-    border-bottom-color: currentColor;
+  border-bottom-color: currentColor;
 }
 
 /* Footer styles */
 footer {
-    flex-shrink: 0;
-    border-top: 1px solid #eaeaea;
-    padding: 1rem 0;
-    width: 100%;
+  flex-shrink: 0;
+  background-color: #f8f8f8;
+  border-top: 1px solid #eaeaea;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.875rem;
+  text-align: center;
+  padding: 1.5rem;
 }
 
-.footer-content {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 0 2rem;
-    font-family: 'JetBrains Mono', monospace;
-    text-align: center;
-    font-size: 0.8rem;
-}
-.footer-links {
-    display: flex;
-    justify-content: center;
-    gap: 1rem; /* Space between links */
-    list-style: none;
-    padding: 0;
-    margin: 0;
+footer nav {
+  margin-bottom: 1rem;
 }
 
-.footer-links li {
-    margin: 0;
+footer a {
+  margin: 0 1rem;
+  color: #666;
 }
 
-.footer-content p {
-    font-size: 0.8rem;
-  
-    margin-top: 0.5rem; /* Adds space between links and paragraph */
+footer p {
+  margin: 0;
+  color: #888;
+  font-size: 0.75rem;
+  font-weight: 300;
 }
-
-/*.footer-links a {*/
-/*    text-decoration: none;*/
-/*    color: #2c3e50;*/
-/*    font-weight: 500;*/
-/*    transition: color 0.3s ease;*/
-/*}*/
-
-/*.footer-links a:hover {*/
-/*    color: #3498db;*/
-/*}*/
-

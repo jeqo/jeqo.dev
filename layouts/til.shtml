@@ -1,0 +1,23 @@
+<extend template="base.shtml">
+<title id="title" :text="$page.title"></title>
+<head id="head"></head>
+<body id="body">
+  <header>
+    <h1 :text="$page.title"></h1>
+    <div>
+      <span
+        :text="$page.date.format('January 02, 2006')"
+      ></span>
+    </div>
+  </header>
+  <main>
+    <article :html="$page.content()"></article>
+    <div>
+      <ul :loop="$page.tags">
+        <li>
+          #<span :text="$loop.it"></span>
+        </li>
+      </ul>
+    </div>
+  </main>
+</body>

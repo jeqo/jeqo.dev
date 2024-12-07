@@ -222,14 +222,15 @@ code {
 
 /* Links */
 a {
-  color: #2c5282;
+  color: #0066cc;          /* Default link color (a nice blue) */
   text-decoration: none;
   /*border-bottom: 1px solid transparent;*/
-  transition: border-color 0.2s ease;
+  transition: color 0.2s ease;
 }
 
 a:hover {
   border-bottom-color: currentColor;
+  color: #003d7a;          /* Darker blue for hover */
 }
 
 /* Footer styles */

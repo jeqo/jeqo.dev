@@ -8,8 +8,8 @@
   </header>
   <main>
     <div :loop="$page.subpages()">
-      <a class="post-link" href="$loop.it.link()" :text="$loop.it.title"></a>
-      <span class="post-byline" :text="$loop.it.date.format('January 02, 2006')"></span>
+      <a class="post-link" :if="$loop.it.layout.eql('post.shtml').or($loop.it.layout.eql('note.shtml'))" href="$loop.it.link()" :text="$loop.it.title"></a>
+      <span class="post-byline" :if="$loop.it.layout.eql('post.shtml').or($loop.it.layout.eql('note.shtml'))" :text="$loop.it.date.format('January 02, 2006')"></span>
     </div>
   </main>
 </body>

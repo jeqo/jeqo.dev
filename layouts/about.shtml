@@ -1,0 +1,9 @@
+<body id="body">
+  <header class="home-header">
+    <h1>@jeqo</h1>
+    <p>data streaming, observability, and random stuff</p>
+  </header>
+  <main>
+    <article :html="$page.content()"></article>
+  </main>
+</body>

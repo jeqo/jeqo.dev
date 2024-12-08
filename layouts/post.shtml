@@ -1,35 +1,16 @@
-<extend template="base.shtml">
-<title id="title" :text="$page.title"></title>
-<head id="head"></head>
+<extend template="content.shtml">
 <body id="body">
   <header class="post-header">
     <img src="$page.asset('header.jpg').link()" loading="lazy">
     <div class="post-header-content">
       <h1 :text="$page.title"></h1>
-      <div class="post-meta">
+      <div class="post-header-meta">
         <span
           :text="$page.date.format('January 02, 2006')"
         ></span>
       </div>
     </div>
   </header>
-  <main>
-    <div>
-      <div :if="$page.tags.len.gt(1)" class="tags">
-        <div :loop="$page.tags.slice(1)">
-          #<span :text="$loop.it"></span>
-        </div>
-      </div>
-      <div class="post-meta">
-        <span :text="$page.author"></span>
-        <span :if="$page.tags.len.gt(0)">
-          |
-          <span :text="$page.tags.at(0)"></span>
-        </span>
-      </div>
-    </div>
-    <article :html="$page.content()"></article>
-  </main>
   <script>
     const headerImage = document.querySelector('.post-header img');
     if (headerImage) {

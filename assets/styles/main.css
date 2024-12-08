@@ -133,9 +133,14 @@ header.home-header {
   justify-content: center;
 }
 
+.home-header h1 {
+  color: rgba(0,0,0,1);
+}
+
 .home-header p {
   font-weight: 200;
   font-size: 1rem;
+  font-style: italic;
 }
 
 /* Post header */
@@ -169,7 +174,7 @@ header.post-header {
 }
 
 .post-header img.loaded {
-    opacity: 1;  /* Fully visible when loaded */
+    opacity: 1;  /* Fully visible when loaded. requires js to set loaded class */
 }
 
 .post-header-content {
@@ -180,11 +185,16 @@ header.post-header {
   z-index: 3;
 }
 
-.post-meta {
-  /*font-family: 'JetBrains Mono', monospace;*/
-  font-size: 0.9rem;
+.post-header-meta {
+  font-size: 1rem;
   margin-bottom: 1rem;
   font-style: italic;
+  margin-top: 0.75rem;
+}
+
+.post-meta {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .post-link {
@@ -217,9 +227,8 @@ article {
 
 .tags {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 200;
-  margin-bottom: 0.75rem;
 }
 
 /* Typography */
@@ -258,21 +267,18 @@ code {
 
 /* Links */
 a {
-  color: #0066cc;          /* Default link color (a nice blue) */
+  color: rgba(0,0,0,1);
   text-decoration: none;
-  /*border-bottom: 1px solid transparent;*/
   transition: color 0.2s ease;
 }
 
 a:hover {
-  border-bottom-color: currentColor;
-  color: #003d7a;          /* Darker blue for hover */
+  color: #d875cd
 }
 
 /* Footer styles */
 footer {
   flex-shrink: 0;
-  /*background-color: #f8f8f8;*/
   border-top: 1px solid #eaeaea;
   font-size: 0.875rem;
   text-align: center;
@@ -291,7 +297,6 @@ footer a {
 footer p {
   font-family: 'JetBrains Mono', monospace;
   margin: 0.8rem;
-  /*color: #888;*/
   font-size: 0.75rem;
   font-weight: 300;
 }

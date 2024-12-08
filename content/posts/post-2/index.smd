@@ -1,0 +1,15 @@
+---
+.title = "Second Post!",
+.author = "Jorge Esteban Quilcate Otoya",
+.layout = "post.shtml",
+.date = @date("2020-07-06T00:00:00"),
+.draft = false,
+.tags = [
+  "test",
+],
+.custom = {
+  "header-image": "header.jpg",
+}
+--- 
+This is my first post!
+

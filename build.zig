@@ -17,7 +17,9 @@ pub fn build(b: *std.Build) !void {
             "fonts/Spectral-Italic.woff2",
             "fonts/Spectral-SemiBold.woff2",
             "fonts/JetBrainsMono-Regular.woff2",
+            "fonts/JetBrainsMono-Italic.woff2",
             "fonts/JetBrainsMono-Medium.woff2",
+            "fonts/JetBrainsMono-Light.woff2",
             "fonts/JetBrainsMono-Bold.woff2",
         },
     });

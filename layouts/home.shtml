@@ -9,6 +9,12 @@
   <main>
     <div :loop="$page.subpages()">
       <a class="post-link" :if="$loop.it.layout.eql('post.shtml').or($loop.it.layout.eql('note.shtml'))" href="$loop.it.link()" :text="$loop.it.title"></a>
+      <div :if="$loop.it.description.len().gt(0)" style="font-style: italic">
+        <span :text="$loop.it.description"></span>
+      </div>
+      <div :loop="$loop.it.tags" class="tags">
+        #<span :text="$loop.it"></span>
+      </div>
       <span class="post-byline" :if="$loop.it.layout.eql('post.shtml').or($loop.it.layout.eql('note.shtml'))" :text="$loop.it.date.format('January 02, 2006')"></span>
     </div>
   </main>

@@ -11,13 +11,20 @@
     </div>
   </header>
   <main>
-    <article :html="$page.content()"></article>
     <div>
-      <ul :loop="$page.tags">
-        <li>
+      <div :if="$page.tags.len.gt(1)" class="tags">
+        <div :loop="$page.tags.slice(1)">
           #<span :text="$loop.it"></span>
-        </li>
-      </ul>
+        </div>
+      </div>
+      <div class="post-meta">
+        <span :text="$page.author"></span>
+        <span :if="$page.tags.len.gt(0)">
+          |
+          <span :text="$page.tags.at(0)"></span>
+        </span>
+      </div>
     </div>
+    <article :html="$page.content()"></article>
   </main>
 </body>

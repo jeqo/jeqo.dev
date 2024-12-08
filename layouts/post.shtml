@@ -14,18 +14,28 @@
     </div>
   </header>
   <main>
-    <h4>
-      <span :text="$page.author"></span>
-      |
-      <!-- TODO: span :text="$page.custom.get('category')"></span -->
-    </h4>
-    <article :html="$page.content()"></article>
     <div>
-      <ul :loop="$page.tags">
-        <li>
+      <div :if="$page.tags.len.gt(1)" class="tags">
+        <div :loop="$page.tags.slice(1)">
           #<span :text="$loop.it"></span>
-        </li>
-      </ul>
+        </div>
+      </div>
+      <div class="post-meta">
+        <span :text="$page.author"></span>
+        <span :if="$page.tags.len.gt(0)">
+          |
+          <span :text="$page.tags.at(0)"></span>
+        </span>
+      </div>
     </div>
+    <article :html="$page.content()"></article>
   </main>
+  <script>
+    const headerImage = document.querySelector('.post-header img');
+    if (headerImage) {
+        headerImage.addEventListener('load', () => {
+            headerImage.classList.add('loaded');
+        });
+    }
+  </script>
 </body>

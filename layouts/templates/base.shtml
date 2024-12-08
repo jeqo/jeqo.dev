@@ -16,21 +16,16 @@
       <nav>
         <a href="/">home</a>
         <a href="/about">about</a>
-        <a href="/posts">posts</a>
-        <a href="/notes">notes</a>
-      </nav>
-      <nav>
         <a href="https://github.com/jeqo" target="_blank">github</a>
         <a href="https://substack.com/@jeqo" target="_blank">substack</a>
         <a href="https://bsky.app/profile/jeqo.dev" target="_blank">bsky</a>
         <a href="https://linkedin.com/in/jeqo89" target="_blank">linkedin</a>
-      </nav>
-      <p>
+        |
         <a href="http://creativecommons.org/licenses/by/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer">
           CC BY 4.0
         </a>
         [<a href="https://github.com/jeqo/jeqo-zine" target="_blank">source-code</a>]
-      </p>
+      </nav>
     </footer>
   </body>
 </html>

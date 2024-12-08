@@ -1,3 +1,6 @@
+<extend template="base.shtml">
+<title id="title" :text="$page.title"></title>
+<head id="head"></head>
 <body id="body">
   <header class="home-header">
     <h1>@jeqo</h1>

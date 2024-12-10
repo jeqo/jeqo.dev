@@ -138,6 +138,10 @@ header.home-header {
   font-weight: 400;
 }
 
+.home-header h1:hover {
+  color: #d875cd
+}
+
 .home-header p {
   font-weight: 200;
   font-size: 1rem;

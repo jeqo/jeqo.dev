@@ -3,7 +3,7 @@
 <head id="head"></head>
 <body id="body">
   <header class="home-header">
-    <h1>@jeqo</h1>
+    <a href="/"><h1>@jeqo</h1></a>
     <p>data streaming, observability, and random stuff</p>
   </header>
   <main>

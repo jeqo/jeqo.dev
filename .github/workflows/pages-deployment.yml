@@ -15,6 +15,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      # Cache Zig dependencies and build artifacts
+      - name: Cache Zig dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/zig
+            zig-cache
+            ~/.cache/zls
+          key: ${{ runner.os }}-zig-${{ env.ZIG_VERSION }}-${{ hashFiles('build.zig', 'build.zig.zon') }}
+          restore-keys: |
+            ${{ runner.os }}-zig-${{ env.ZIG_VERSION }}-
+            ${{ runner.os }}-zig-
       # Install Zig
       - name: Install Zig
         uses: goto-bus-stop/setup-zig@v2
@@ -32,4 +44,3 @@ jobs:
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           projectName: jeqo-dev # e.g. 'my-project'
           directory: zig-out
-          customDomain: jeqo.dev

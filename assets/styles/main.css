@@ -227,10 +227,11 @@ article {
 
 /* Add styles for images within articles */
 article img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin: 2rem auto;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 2rem auto;
+  border-radius: 4px;  /* Slight rounding of corners */
 }
 
 .tags {

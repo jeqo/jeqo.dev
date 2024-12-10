@@ -8,33 +8,33 @@
 
 # Jorge Esteban Quilcate Otoya
 
-I'm an open-source software developer with a focus on data systems, currently Senior Software Engineer at [Aiven](https://aiven.io).
-Data streaming has been my main area of work with [Apache Kafka](https://kafka.apache.org) at its core.
+I'm an open-source software developer focusing on data systems; currently Senior Software Engineer at [Aiven](https://aiven.io).
+My main area of work is data streaming, with [Apache Kafka](https://kafka.apache.org) at its core.
 
-My journey began as a consultant specializing in data integration across Latin America, Norway, and the UK, culminating in three years as a Solution Architect at [Confluent](https://confluent.io) before transitioning to my current software engineering role.
+My professional journey began as a software consultant specializing in data integration with years of experience in Latin America, Norway, and the UK; 
+culminating with three years as a Solution Architect at [Confluent](https://confluent.io) before transitioning to my current software engineering role.
 
-While I'm passionate about my work, life is much more than that---I'm a blessed father, husband, son, brother, and friend. 
+While passionate about my work, life is much more than that---I'm a blessed father, husband, son, brother, and friend. 
 
-I've come to realize that most things I love are _painful_. 
-They take time to learn and master, if ever, and I may never reach a point where I would feel like _I've done it_.
-That's ok---The gratitude on **being able to try** and pursue these passions overcomes everything else.
+I've come to realize that most things I love are _painful_ in a way. 
+They take time and effort to learn and much more to master, if ever, and may never reach a point of _completion_.
+Took me a while to understand that that's OK---the gratitude of **being able to try** and pursue these passions overcomes everything else.
 
-Playing _fútbol_ has been constant in my life. 
-I started very early, built my youth around it, and even entertained the idea of being a professional, though it wasn't for me.
+Playing Football (_Fútbol_) has been constant in my life. 
+I started very early and built my youth around it---even entertained the idea of being a professional, though it wasn't for me.
 
 From the many things it taught me, Running became a lasting passion. 
-I'm been running since then, usually helped by the [Nike Run Club](https://www.nike.com/nrc-app) app and [Coach Bennett](https://www.instagram.com/coachbennett/), and (I"m proud to report) recently achieved my first Marathon.
+I'd been running since then, usually helped by the [Nike Run Club App](https://www.nike.com/nrc-app) and [Coach Bennett](https://www.instagram.com/coachbennett/), and recently achieving my first marathon(!).
 
-Piano is my newest pursuit. Just being able to reproduce anything that resembles beautiful pieces of music, like [Porz Goret](https://www.youtube.com/watch?v=KwwwWz6Ef3I), makes me happy.
+Playing piano is my newest pursuit. 
+Just being able to resemble anything close to beautiful pieces of music---like [Porz Goret](https://www.youtube.com/watch?v=KwwwWz6Ef3I)---makes me happy.
 
-I have an unusual (I guess) number of pictures about clouds, the sky, and trees, (poorly) taken with my cellphone.
-Haven't found a great way of sharing them, but post headers seem like a start.
+I have a growing collection of clouds, sky, and tree photographs (poorly) taken with my phone that I'll use as post headers.
 
 []($image.asset('sky.jpg').id('sky').linked(true))
 
-I started this site as a new version of my (now) old blog: [jeqo.github.io](https://jeqo.github.io).
-
+I started this site as a new version of my (now) old blog site: [jeqo.github.io](https://jeqo.github.io).
 It's an opportunity to start fresh, and---hopefully---add writing to the practices I was describing before.
 
-It's built using [Zine](https://zine-ssg.io)---Even though on early versions, I like its principles, and it's a great escuse to learn [Zig](https://ziglang.org).
+It's built using [Zine](https://zine-ssg.io)---Even though on early versions, I like its principles, and it's a great excuse to learn [Zig](https://ziglang.org).
 

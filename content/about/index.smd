@@ -8,6 +8,8 @@
 
 # Jorge Esteban Quilcate Otoya
 
+[]($image.asset('profile.jpg').id('profile'))
+
 I'm an open-source software developer focusing on data systems; currently Senior Software Engineer at [Aiven](https://aiven.io).
 My main area of work is data streaming, with [Apache Kafka](https://kafka.apache.org) at its core.
 
@@ -33,8 +35,7 @@ I have a growing collection of clouds, sky, and tree photographs (poorly) taken 
 
 []($image.asset('sky.jpg').id('sky').linked(true))
 
-I started this site as a new version of my (now) old blog site: [jeqo.github.io](https://jeqo.github.io).
-It's an opportunity to start fresh, and---hopefully---add writing to the practices I was describing before.
+I started this site as a new version of my (now) old blog site: [jeqo.github.io](https://jeqo.github.io) as an opportunity to start fresh, and---hopefully---add writing to the practices I was describing before.
 
 It's built using [Zine](https://zine-ssg.io)---Even though on early versions, I like its principles, and it's a great excuse to learn [Zig](https://ziglang.org).
 

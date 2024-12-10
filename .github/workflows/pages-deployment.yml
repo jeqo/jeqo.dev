@@ -22,6 +22,7 @@ jobs:
         with:
           path: |
             .zig-cache
+            zig-out
           key: ${{ runner.os }}-zig-${{ env.ZIG_VERSION }}-${{ hashFiles('build.zig', 'build.zig.zon') }}
           restore-keys: |
             ${{ runner.os }}-zig-${{ env.ZIG_VERSION }}-

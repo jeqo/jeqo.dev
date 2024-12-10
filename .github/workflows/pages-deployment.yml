@@ -20,9 +20,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            ~/.cache/zig
-            zig-cache
-            ~/.cache/zls
+            .zig-cache
           key: ${{ runner.os }}-zig-${{ env.ZIG_VERSION }}-${{ hashFiles('build.zig', 'build.zig.zon') }}
           restore-keys: |
             ${{ runner.os }}-zig-${{ env.ZIG_VERSION }}-

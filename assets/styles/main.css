@@ -234,6 +234,13 @@ article img {
   border-radius: 4px;  /* Slight rounding of corners */
 }
 
+.profile {
+  width: 300px;           /* Fixed size - adjust as needed */
+  height: 300px;          /* Same as width to maintain circle */
+  border-radius: 50%;     /* Makes it circular */
+  object-fit: cover;      /* Ensures image fills circle without distortion */
+}
+
 .tags {
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.8rem;

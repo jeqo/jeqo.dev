@@ -8,7 +8,7 @@
 
 # Jorge Esteban Quilcate Otoya
 
-[]($image.asset('profile.jpg').id('profile'))
+[]($image.asset('profile.jpg').id('profile').attrs('profile'))
 
 I'm an open-source software developer focusing on data systems; currently Senior Software Engineer at [Aiven](https://aiven.io).
 My main area of work is data streaming, with [Apache Kafka](https://kafka.apache.org) at its core.

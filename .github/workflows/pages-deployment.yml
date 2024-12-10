@@ -34,7 +34,7 @@ jobs:
       # Build your website
       - name: Build site
         run: |
-          zig build --release=safe --summary new
+          zig build --release=safe --summary new --verbose
       - name: Publish
         uses: cloudflare/pages-action@v1
         with:

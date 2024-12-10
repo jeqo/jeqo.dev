@@ -1,6 +1,6 @@
 ---
 .title = "About me",
-.date = @date("2023-12-08"),
+.date = @date("2023-12-10"),
 .author = "jeqo",
 .layout = "about.shtml",
 .draft = false,
@@ -37,5 +37,5 @@ I have a growing collection of clouds, sky, and tree photographs (poorly) taken 
 
 I started this site as a new version of my (now) old blog site: [jeqo.github.io](https://jeqo.github.io) as an opportunity to start fresh, and---hopefully---add writing to the practices I was describing before.
 
-It's built using [Zine](https://zine-ssg.io)---Even though on early versions, I like its principles, and it's a great excuse to learn [Zig](https://ziglang.org).
+It's built using [Zine](https://zine-ssg.io)---even though on early versions, I like its principles, and it's a great excuse to learn [Zig](https://ziglang.org).
 

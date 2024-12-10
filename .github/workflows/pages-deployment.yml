@@ -5,6 +5,7 @@ on:
     branches: [ "main" ]
 env:
   ZIG_VERSION: "0.13.0"
+name: Deploy
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -42,3 +43,4 @@ jobs:
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           projectName: jeqo-dev # e.g. 'my-project'
           directory: zig-out
+

@@ -298,6 +298,12 @@ a:hover {
   color: #d875cd
 }
 
+article a {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 2px;
+}
+
 /* Footer styles */
 footer {
   flex-shrink: 0;

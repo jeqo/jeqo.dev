@@ -10,7 +10,7 @@
 
 []($image.asset('profile.jpg').id('profile').attrs('profile'))
 
-I'm a peruvian open-source software developer focusing on data systems; currently Senior Software Engineer at [Aiven](https://aiven.io) based in Helsinki, Finland.
+I'm a Peruvian open-source software developer focusing on data systems; currently Senior Software Engineer at [Aiven](https://aiven.io) based in Helsinki, Finland.
 My main area of work is data streaming, with [Apache Kafka](https://kafka.apache.org) at its core.
 
 My professional journey began as a software consultant specializing in data integration with years of experience in Latin America, Norway, and the UK; 

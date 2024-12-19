@@ -160,7 +160,7 @@ header.post-header {
   justify-content: center;
   color: #fff;
   text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   overflow: hidden;
   background-color: #000;  /* Black background while loading */
 }
@@ -198,6 +198,7 @@ header.post-header {
 }
 
 .post-meta {
+  line-height: 1.5rem;
   margin-top: 1rem;
   margin-bottom: 1rem;
 }

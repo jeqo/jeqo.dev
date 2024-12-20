@@ -1,7 +1,13 @@
 <extend template="content.shtml">
 <body id="body">
   <header class="post-header">
+    <!-- Would like to do this one support for parent assets is supported -->
+    <!-- div :if="$page.isSection()" -->
     <img src="$page.asset('header.jpg').link()" loading="lazy">
+    <!-- /div -->
+    <!-- div :if="$page.isSection().not()">
+      <img src="$page.parentSection().asset('header.jpg').link()" loading="lazy">
+    </div -->
     <div class="post-header-content">
       <h1 :text="$page.title"></h1>
       <div class="post-header-meta">

@@ -277,6 +277,13 @@ ol, ul {
   font-size: 1.25rem;
 }
 
+blockquote {
+  border-left: 4px solid #e0e0e0;
+  margin: 0;
+  padding: 1rem;
+  margin: 1.5rem 0;
+}
+
 /* Code blocks */
 pre, code {
   font-family: 'JetBrains Mono', monospace;

@@ -17,12 +17,4 @@
       </div>
     </div>
   </header>
-  <script>
-    const headerImage = document.querySelector('.post-header img');
-    if (headerImage) {
-        headerImage.addEventListener('load', () => {
-            headerImage.classList.add('loaded');
-        });
-    }
-  </script>
 </body>

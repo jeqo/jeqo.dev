@@ -20,4 +20,17 @@
     </div>
     <article :html="$page.content()"></article>
   </main>
+  <script>
+    const headerImage = document.querySelector('.post-header img');
+    if (headerImage) {
+        headerImage.addEventListener('load', () => {
+            console.log('Image loaded successfully');
+            headerImage.classList.add('loaded');
+        });
+        
+        headerImage.addEventListener('error', (e) => {
+            console.log('Image failed to load:', e);
+        });
+    }
+  </script>
 </body>

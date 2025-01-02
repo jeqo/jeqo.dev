@@ -155,6 +155,7 @@ header.post-header {
   margin: 0;
   position: relative;
   height: 400px;
+  min-height: 400px; /* Minimum height */
   display: flex;
   align-items: center;
   justify-content: center;

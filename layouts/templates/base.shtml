@@ -9,6 +9,8 @@
     </title>
     <super>
     <link rel="stylesheet" href="/styles/main.css">
+    <link rel="stylesheet" href="/styles/fonts.css">
+    <link rel="stylesheet" href="/styles/highlight.css">
   </head>
   <body id="body">
     <super>
@@ -17,7 +19,7 @@
         <a href="/">home</a>
         <a href="/about">about</a>
         <a href="https://github.com/jeqo" target="_blank">github</a>
-        <a href="https://substack.com/@jeqo" target="_blank">substack</a>
+        <!-- a href="https://substack.com/@jeqo" target="_blank">substack</a -->
         <a href="https://bsky.app/profile/jeqo.dev" target="_blank">bsky</a>
         <a href="https://www.linkedin.com/in/jeqo" target="_blank">linkedin</a>
         |

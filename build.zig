@@ -11,6 +11,8 @@ pub fn build(b: *std.Build) !void {
         .static_assets = &.{
             "favicon.ico",
             "styles/main.css",
+            "styles/fonts.css",
+            "styles/highlight.css",
             "fonts/Spectral-Regular.woff2",
             "fonts/Spectral-Medium.woff2",
             "fonts/Spectral-Light.woff2",

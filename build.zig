@@ -9,6 +9,7 @@ pub fn build(b: *std.Build) !void {
         .layouts_dir_path = "layouts",
         .assets_dir_path = "assets",
         .static_assets = &.{
+            "CNAME",
             "favicon.ico",
             "styles/main.css",
             "styles/fonts.css",

@@ -36,13 +36,13 @@ jobs:
       # Build your website
       - name: Build site
         run: |
-          zig build --release=safe --summary new --verbose
+          zig build --summary new
       - name: Publish
         uses: cloudflare/pages-action@v1
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          projectName: jeqo-dev # e.g. 'my-project'
-          directory: zig-out
+          projectName: jeqo-dev
+          directory: ./zig-out
 

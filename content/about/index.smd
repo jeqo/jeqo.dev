@@ -10,7 +10,7 @@
 
 []($image.asset('profile.jpg').id('profile').attrs('profile'))
 
-I'm a Peruvian open-source software developer focusing on data systems; currently Senior Software Engineer at [Aiven](https://aiven.io) based in Helsinki, Finland.
+I'm a Peruvian software developer focusing on data systems; currently Senior Software Engineer at [Aiven](https://aiven.io) based in Helsinki, Finland.
 My main area of work is data streaming, with [Apache Kafka](https://kafka.apache.org) at its core.
 
 My professional journey began as a software consultant specializing in data integration with years of experience in Latin America, Norway, and the UK; 
@@ -18,11 +18,11 @@ culminating with three years as a Solution Architect at [Confluent](https://conf
 
 While passionate about my work, life is much more than that---I'm a lucky father, husband, son, brother, and friend. 
 
-I've come to realize that most things I love are challenging---even _painful_ at times. 
+I've come to realize that most things I love are challenging. 
 They take time and focus to learn, much more to master---if ever---, and may never reach a point of _completion_.
 Took me a while to understand that that's OK---the gratitude of **being able to try** and pursue these passions overcomes everything else.
 
-Playing Football (_Fútbol_) has been a constant in my life. 
+Playing _fútbol_ has been a constant in my life. 
 I started very early and built my youth around it---even entertained the idea of being a professional, though it wasn't for me.
 
 From the many things it taught me, Running became a lasting passion. 
@@ -30,8 +30,6 @@ I'd been running since then, usually helped by the [Nike Run Club App](https://w
 
 Playing the Piano is my newest pursuit. 
 Just being able to resemble anything close to beautiful pieces of music---like [Porz Goret](https://www.youtube.com/watch?v=KwwwWz6Ef3I)---makes me happy.
-
-Finally, a sort of hobby of mine is to take photographs of clouds, sky, and trees. I guess I'll use some of those as post headers.
 
 []($image.asset('sky.jpg').id('sky').linked(true))
 

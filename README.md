@@ -1,1 +1,1 @@
-# jeqo-zine
+# jeqo.dev source-code

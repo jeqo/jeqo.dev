@@ -19,6 +19,24 @@
       </div>
     </div>
     <article :html="$page.content()"></article>
+    <script
+      src="https://giscus.app/client.js"
+      data-repo="jeqo/jeqo.dev"
+      data-repo-id="R_kgDONGADTQ"
+      data-category="Q&amp;A"
+      data-category-id="DIC_kwDONGADTc4ClzY0"
+      data-mapping="pathname"
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="1"
+      data-input-position="top"
+      data-theme="light_high_contrast"
+      data-lang="en"
+      data-loading="lazy"
+      crossorigin="anonymous"
+      async
+    >
+    </script>
   </main>
   <script>
     const headerImage = document.querySelector('.post-header img');

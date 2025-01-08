@@ -1,0 +1,15 @@
+---
+.title = "Benchmarking Kafka: OpenMessaging Benchmark workloads",
+.description = "Using OpenMessaging Benchmark tooling to evaluate Kafka cluster performance under different workloads.",
+.date = @date("2023-12-16"),
+.author = "Jorge Esteban Quilcate Otoya",
+.layout = "post.shtml",
+.tags = [
+  "how-to",
+  "apache-kafka",
+  "performance",
+],
+.draft = true,
+--- 
+
+Another

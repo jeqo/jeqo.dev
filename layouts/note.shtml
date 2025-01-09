@@ -9,3 +9,19 @@
     </div>
   </header>
 </body>
+<main id="main">
+  <div class="post-meta">
+    <div>
+      <span :text="$page.author"></span>
+      <span :if="$page.tags.len.gt(0)">
+        |
+        <span :text="$page.tags.at(0)"></span>
+      </span>
+    </div>
+    <div :if="$page.tags.len.gt(1)" class="tags">
+      <div :loop="$page.tags.slice(1)">
+        #<span :text="$loop.it"></span>
+      </div>
+    </div>
+  </div>
+</main>

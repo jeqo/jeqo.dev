@@ -102,7 +102,6 @@ header.post-header {
 .post-header-meta {
   font-size: 1rem;
   margin-bottom: 1rem;
-  font-style: italic;
   margin-top: 0.75rem;
 }
 
@@ -122,7 +121,7 @@ header.post-header {
 }
 
 .post-byline {
-  font-size: 0.83255rem;
+  font-size: 0.9rem;
   line-height: 1.75rem;
   display: block;
   margin-top: 0;

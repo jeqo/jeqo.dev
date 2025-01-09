@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
   <head id="head">
+    <!-- Metadata -->
+    <!-- Basic metadata -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="title">
       <super>
       | @jeqo
     </title>
+    <meta name="author" content="Jorge Esteban Quilcate Otoya">
+    <!-- Open Graph metadata (for Facebook, Pocket, etc.) -->
+    <meta property="og:site_name" content="@jeqo">
     <super>
+    <!-- Style -->
     <link rel="stylesheet" href="/styles/main.css">
     <link rel="stylesheet" href="/styles/fonts.css">
     <link rel="stylesheet" href="/styles/highlight.css">

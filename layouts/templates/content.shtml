@@ -1,6 +1,23 @@
 <extend template="base.shtml">
 <title id="title" :text="$page.title"></title>
-<head id="head"></head>
+<head id="head">
+  <meta name="description" content="A brief description of your blog post that will appear in search results and when shared">
+  <!-- Open Graph metadata (for Facebook, Pocket, etc.) -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="$page.title">
+  <meta property="og:description" content="$page.description">
+  <meta property="og:url" content="$site.host_url.addPath($page.link())">
+  <meta property="og:image" content="$site.host_url.addPath($page.link().suffix('header.jpg'))">
+  <!-- Article-specific metadata -->
+  <meta property="article:published_time" content="$page.date.format('2006-01-02T15:04:00')">
+  <meta property="article:author" content="$page.author">
+  <meta property="article:tag" content="$page.tags.at(0)"><!-- expand when possible -->
+  <!-- Twitter Card metadata -->
+  <meta name="twitter:title" content="$page.title">
+  <meta name="twitter:description" content="$page.description">
+  <meta name="twitter:image" content="$site.host_url.addPath($page.link().suffix('header.jpg'))">
+  <meta name="twitter:author" content="$page.author">
+</head>
 <body id="body">
   <super>
   <main id="main">

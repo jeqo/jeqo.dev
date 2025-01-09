@@ -1,0 +1,23 @@
+<extend template="content.shtml">
+<body id="body">
+  <header>
+    <h1 :text="$page.title"></h1>
+    <div class="post-header-meta">
+      <span
+        :text="$page.date.format('January 02, 2006')"
+      ></span>
+    </div>
+  </header>
+</body>
+<main id="main">
+  <div class="post-meta">
+    <div>
+      <span>Bookmark</span>
+    </div>
+    <div :if="$page.tags.len.gt(0)" class="tags">
+      <div :loop="$page.tags">
+        #<span :text="$loop.it"></span>
+      </div>
+    </div>
+  </div>
+</main>

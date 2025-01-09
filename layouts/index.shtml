@@ -1,0 +1,22 @@
+<extend template="base.shtml">
+<title id="title" :text="$site.title"></title>
+<head id="head"></head>
+<body id="body">
+  <header class="home-header">
+    <a href="/"><h1>@jeqo</h1></a>
+    <p>data infra, performance, and random stuff</p>
+  </header>
+  <main>
+    <h1 :text="$page.title"></h1>
+    <div :loop="$page.subpages()">
+      <a class="post-link" href="$loop.it.link()" :text="$loop.it.title"></a>
+      <div :loop="$loop.it.tags" class="tags">
+        #<span :text="$loop.it"></span>
+      </div>
+      <span
+        class="post-byline"
+        :text="$loop.it.date.format('January 02, 2006')"
+      ></span>
+    </div>
+  </main>
+</body>

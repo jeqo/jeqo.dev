@@ -1,0 +1,8 @@
+---
+.title = "Bookmarks",
+.date = @date("2025-01-08"),
+.author = "jeqo",
+.layout = "index.shtml",
+.draft = false,
+--- 
+

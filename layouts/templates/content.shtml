@@ -1,7 +1,7 @@
 <extend template="base.shtml">
 <title id="title" :text="$page.title"></title>
 <head id="head">
-  <meta name="description" content="A brief description of your blog post that will appear in search results and when shared">
+  <meta name="description" content="$page.description">
   <!-- Open Graph metadata (for Facebook, Pocket, etc.) -->
   <meta property="og:type" content="article">
   <meta property="og:title" content="$page.title">

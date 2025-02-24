@@ -1,0 +1,82 @@
+---
+.title = "TIL: Tuning Linux Networking stack may help to fix Kafka's URP",
+.date = @date("2025-02-26"),
+.author = "Jorge Esteban Quilcate Otoya",
+.layout = "post.shtml",
+.tags = [
+  "til",
+  "linux",
+  "performance",
+  "apache-kafka",
+],
+.draft = false,
+--- 
+
+While I had previously only applied common Linux kernel tuning recommendations for Apache Kafka [[1](https://kafka.apache.org/documentation/#os)]---such as adjusting the number of open files---
+a recent investigation into Under-Replicated Partitions led me to explore deeper OS-level optimizations. 
+An increase on network packet loss along with an increase on TCP memory usage hinted us that this may be related with networking. 
+
+This challenge presented a great opportunity to collaborate with our SRE team at Aiven and investigate the Linux kernel networking stack [[2]](https://www.kernel.org/doc/html/latest/networking/scaling.html), so we dived into it. 
+
+On the Linux network stack there are layers of software and hardware components that could be tuned to allow for more scalable network packet processing.
+
+Starting at the Hardware-level, RSS (Receive-Side Scaling) feature allows for (modern) NICs to distribute packets across multiple CPUs based on NIC queues.
+For most systems, RSS is enough for performant packet processing; but for larger systems where the load is high and the number of CPUs may be higher than the number of NIC queues there is room for further tuning at the software level.
+
+RPS (Receive Packet Steering) and RFS (Receive Flow Steering) are both kernel features that increase and tune the distribution and affinity of packet processing beyond RSS limits.
+At this level, a flow is identified by `hash(src_ip, dst_ip, src_port, dst_port)`.
+RPS offers a deterministic distribution where the same flow goes to the same CPU based on the hash; and
+RFS goes a step further and distributes the flow dynamically by tracking which CPU is processing the application socket, selecting the CPU based on the application behavior.
+
+Our analysis revealed that we could achieve lower latency by enabling CPU affinity with RPS, 
+ensuring that connections between specific source and target hosts and ports consistently used the same CPU.
+This was enough to unlock the processing bottleneck and bring the cluster back to a healthy state: TCP memory consumption dropped to average values, packet loss was eliminated, and most significantly, Under-Replicated Partitions (URPs) went to zero even under high load.
+
+For instance the following code enables RPS by evenly distributing the flows buffered across the available CPUs:
+
+```bash
+BUFFER_SIZE=16384
+echo $BUFFER_SIZE | sudo tee /proc/sys/net/core/rps_sock_flow_entries;
+num_queues=$(ls /sys/class/net/eth0/queues/ | grep rx | wc -l);
+flow_cnt=$(($BUFFER_SIZE / num_queues));
+for i in $(seq 0 $((num_queues - 1))); do
+  echo $flow_cnt | sudo tee /sys/class/net/eth0/queues/rx-$i/rps_flow_cnt;
+done;
+```
+
+> `BUFFER_SIZE=16384; echo $BUFFER_SIZE | sudo tee /proc/sys/net/core/rps_sock_flow_entries`:
+> - Configures the system-wide RPS flow entry limit
+> - Determines how many concurrent network flows can be tracked
+> - May be available through `net.core.rps_sock_flow_entries`, haven't confirmed
+> 
+> `num_queues=$(ls /sys/class/net/eth0/queues/ | grep rx | wc -l)`:
+> - Counts the number of receive (RX) queues on the network interface
+> - Multiple queues allow parallel processing of network packets
+> 
+> `flow_cnt=$(($BUFFER_SIZE / num_queues))`:
+> - Calculates flow entries per queue
+> - Distributes the total buffer size evenly across all queues
+> 
+> The for loop:
+> ```bash
+> for i in $(seq 0 $((num_queues - 1))); do
+>   echo $flow_cnt | sudo tee /sys/class/net/eth0/queues/rx-$i/rps_flow_cnt;
+> done
+> ```
+> - Configures each RX queue with its allocated flow count
+> - Ensures even distribution of processing across CPU cores
+
+While our specific issue was resolved through receive-side optimizations, 
+it's worth mentioning that XPS (Transmit Packet Steering) provides similar benefits for outgoing traffic.
+We plan to evaluate this optimization in the future.
+
+It's worth mentioning as well that these optimizations come with their own trade-offs:
+
+- Increased resource utilization: more memory used to keep the flow entries stored, overhead of additional flow hash calculation, and packets using all CPUs.
+- System-specific benefits: while these optimizations have helped on Kafka high-load clusters (e.g., >100MB/s in/out), their benefits will be dependent on the hardware, workload, and traffic patterns. For instance, at a certain point the flow hash calculation may be detrimental to the latency compared to simpler configuration on some hardware.
+
+## References
+
+- [1] Kafka documentation for OS tuning: <https://kafka.apache.org/documentation/#os>
+- [2] Kernel documentation on scaling networking stack: <https://www.kernel.org/doc/html/latest/networking/scaling.html> 
+

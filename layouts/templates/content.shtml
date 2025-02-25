@@ -46,15 +46,23 @@
   </main>
   <script>
     const headerImage = document.querySelector('.post-header img');
+
     if (headerImage) {
-        headerImage.addEventListener('load', () => {
-            console.log('Image loaded successfully');
+        // Check if image is already loaded
+        if (headerImage.complete) {
+            // console.log('Image was already loaded');
             headerImage.classList.add('loaded');
-        });
-        
-        headerImage.addEventListener('error', (e) => {
-            console.log('Image failed to load:', e);
-        });
+        } else {
+            // Set up event listeners for images still loading
+            headerImage.addEventListener('load', () => {
+                // console.log('Image loaded successfully');
+                headerImage.classList.add('loaded');
+            });
+            
+            headerImage.addEventListener('error', (e) => {
+                console.log('Image failed to load:', e);
+            });
+        }
     }
   </script>
 </body>

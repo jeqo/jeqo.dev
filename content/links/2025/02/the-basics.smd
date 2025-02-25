@@ -1,0 +1,30 @@
+---
+.title = "The Basics by Thorsten Ball",
+.date = @date("2025-02-20T10:52:51"),
+.author = "jeqo",
+.layout = "bookmark.shtml",
+.tags = [
+  "fundamentals",
+  "ways-of-working",
+],
+.draft = false,
+---
+
+* URL: <https://registerspill.thorstenball.com/p/the-basics>
+* Publication Date: March 23, 2024
+
+This is a great reminder of behaviors that need to keep practicing and improving.
+As the author well put it: they are the basics not because they are easy, but because they are fundamental.
+
+Here are a few of the basics mentioned that I found particularly personal as I've been guilty of not following them more often than I'd like to admit:
+
+> Keep your change free of unrelated changes.
+
+> Before you comment on something, read the whole thing.
+
+> Read the manual, the docs, the instructions, the ticket.
+
+> Know why your fix is a fix.
+
+Thanks for putting this together, Thorsten!
+

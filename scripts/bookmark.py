@@ -45,7 +45,7 @@ def extract_metadata(url):
         return {'url': url, 'title': urlparse(url).path.split('/')[-1]}
 
 
-def generate_bookmark(url, base_path='./contents/links'):
+def generate_bookmark(url, base_path='./content/links'):
     today = datetime.now()
     metadata = extract_metadata(url)
 

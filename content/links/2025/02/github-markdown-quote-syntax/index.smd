@@ -1,0 +1,45 @@
+---
+.title = "GitHub Markdown quote syntax",
+.date = @date("2025-02-27T17:18:57"),
+.author = "jeqo",
+.layout = "bookmark.shtml",
+.tags = [
+  "documentation",
+  "markdown",
+],
+.draft = false,
+---
+
+## GitHub markdown quote syntax for "Note" and "Warning"
+
+URL: https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#alerts
+
+Something I tend to forget when documenting on GitHub markdown is how to highlight notes and warnings.
+
+The GitHub discussion that I usually found is here: https://github.com/orgs/community/discussions/16925
+
+Where the syntax is as follows:
+
+```markdown
+> [!NOTE]  
+> You can use **bold**, *italic*, `code`, and even [links](https://example.com) inside alerts.
+
+> [!TIP]
+> Optional information to help a user be more successful.
+
+> [!IMPORTANT]  
+> Crucial information necessary for users to succeed.
+
+> [!WARNING]  
+> Critical content demanding immediate user attention due to potential risks.
+
+> [!CAUTION]
+> Negative potential consequences of an action.
+```
+
+This will render as:
+
+[]($image.asset('preview.png'))
+
+As far as I know this only works on GitHub, so you can use it in your READMEs, issues, and pull requests.
+

@@ -12,10 +12,43 @@
 .draft = true,
 --- 
 
-Now that we have got started with the OpenMessaging Benchmark (OMB) framework, let's dive into the type of workloads that can be modeled.
+In the [previous post](/blog/benchmarking-apache-kafka/intro-omb), we got started with the OpenMessaging Benchmark (OMB) framework. Now let's dive into the types of workloads that can be modeled.
 
-Even though this is not explicitly defined through in the workload configuration; based on some of the values, the type of workload can be 
-shaped in a way that it will behave very differently.
+While OMB doesn't have an explicit `workloadType` attribute in its configuration, you can configure parameters to create distinctly different benchmark behaviors. Understanding these workload patterns is essential for accurately simulating real-world Kafka deployments and uncovering performance characteristics that matter to your specific use case.
+
+Before we dive into the workload types, let's briefly define the main benchmark execution times:
+
+- **Warmup time**: The initial period where the system is ramped up to the desired throughput. This phase is essential to stabilize the system and ensure consistent performance measurements. It's usually shorter than the run time but can vary based on the workload type.
+- **Run time**: The period where the system is running at the desired throughput. This phase is used to collect performance metrics and evaluate the system's behavior under load. It should be long enough to capture the system's steady-state performance, and follows the warmup time.
+
+Now let's explore the different workload types available in OMB.
+Based on my experience with OMB, the workloads can be defined as follows:
+
+- **Fixed throughput**: The producers and consumers aim to maintain a specified (fixed) throughput. This throughput is applied during both warmup and run time.
+
+- **Max throughput**: The producers aren't bounded by a specified throughput limit. Based on observed latencies (TODO something to cover later in the post), producers dynamically increase or decrease throughput. Ideally, once the maximum sustainable throughput is found, it's maintained while the cluster is tested. During both warmup and run time, producers continuously adjust as the maximum throughput is determined.
+
+- **Consumer backlog**: This mode builds on the fixed throughput approach but expands benchmark phases to three distinct periods: warmup, backlog building time, and run time. It uses the fixed throughput mode to build a backlog of messages before starting the run time phase where consumers process the backlog and then maintain the fixed throughput.
+
+In this post, we'll explore each workload type in detail, including configuration examples, best practices, and real-world applications.
+
+## Throughput definition
+
+Before diving into the workload types, let's clarify what we mean by "throughput" in the context of OMB. 
+Throughput is defined by the producer rate (messages per second) and the message sizing (in bytes).
+Let's look into how these are defined in the OMB configuration.
+
+
+
+
+
+## Fixed throughput
+
+Fixed throughput is the most common workload type and is relatively straightforward to run. 
+The goal is to maintain a stable throughput throughout the benchmark execution.
+
+    
+---
 
 Based on my experience with OMB, the workloads can be defined as follows:
 

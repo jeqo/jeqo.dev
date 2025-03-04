@@ -1,0 +1,68 @@
+---
+.title = "2025.02",
+.date = @date("2025-03-03"),
+.author = "Jorge Esteban Quilcate Otoya",
+.layout = "note.shtml",
+.tags = ["log"],
+.draft = false,
+--- 
+
+As this year started, I challenged myself to develop and keep a small but steady writing throughput that feels good and manageable over time.
+This month I decided to start these `log` posts to share what I've been up to and what _may_ come next.
+Let's get started!
+
+## Recent posts
+
+With the release of this site I was looking into topics to start publishing.
+I picked something which I've been working on for a while: 
+Apache Kafka with a focus on performance. 
+
+There are a couple of posts from the past months:
+
+### [Benchmarking Kafka: Getting started with OpenMessaging Benchmark](/blog/benchmarking-apache-kafka/intro-omb/)
+
+I've been working on benchmarking Kafka for a year or so and have found the OpenMessaging Benchmark (OMB) framework quite useful, so I decided to start a series where I could share how I've been using this tool.
+
+This is the first post where I share a bit on the OMB architecture and how to get started.
+If you're looking for ways to quickly put some workload on a Kafka cluster, this may be interesting for you.
+
+### [TIL: Tuning Linux Networking stack may help to fix Kafka's URP](/blog/til/tuning-linux-networking-kafka-urp/)
+
+> Inspired by [Simon Willison's TIL blog](https://til.simonwillison.net/)---one of many ways one could be inspired by Simon's work---I also started a more lightweight type of posts.
+
+This post shares learnings from troubleshooting a network bottleneck on a Kafka cluster, and how tuning the network stack at the kernel level helped us to bring the cluster back to healthy state.
+There's much to learn and test around these networking features, but this post serves as a good teaser.
+
+## Recent links
+
+> Simon calls these [bookmarks](https://simonwillison.net/2024/Dec/22/link-blog/)
+
+A couple of things here:
+
+### [The Basics by Thorsten Ball](/links/2025/02/the-basics/)
+
+This was a great post and better reminder on practices that will make our job better in different ways.
+I picked a few I personally wanted to highlight, but I recommend [reading all](https://registerspill.thorstenball.com/p/the-basics).
+
+### [GitHub Markdown quote syntax](/links/2025/02/github-markdown-quote-syntax/)
+
+Something I find myself searching again and again is the syntax to add formatting to quotes on GitHub Markdown, so I added a link to remember.
+
+## What may come next
+
+I'd like to continue the benchmarking Kafka series covering Workload types, how workload distribution works, and more internals that I find interesting.
+
+Let's see what can be achieved.
+
+## Personal notes
+
+Seems that the random photos I tend to take on the street may have found a place as Bluesky has released [Flashes](https://techcrunch.com/2025/02/28/bluesky-based-instagram-alternative-flashes-launches-publicly/).
+You can find me there at [@jeqo89.bsky.social](https://bsky.app/profile/jeqo89.bsky.social).
+The snow and _"warm"_ winter have given some nice views this month.
+I'll mix new ones with some old pics from my backlog.
+
+In other news, this beginning of March marks my second year at Aiven.
+It has been quite a journey as I shifted from Solution Architect and Consultant into a Software Engineering role.
+Not without ups and downs, but I find myself working on relevant projects with great, smart colleagues that make this journey worth it.
+I'm excited for what's coming, let's go!
+

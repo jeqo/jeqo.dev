@@ -35,15 +35,24 @@ This was enough to unlock the processing bottleneck and bring the cluster back t
 For instance the following code enables RPS by evenly distributing the flows buffered across the available CPUs:
 
 ```bash
+# Get CPUs to distribute RPS flows
+NUM_CPUS=$(nproc)
+# This generates a mask like "f" for 4 CPUs, "ff" for 8 CPUs, "ffff" for 16 CPUs, etc.
+cpus=$(printf '%x' $((2**$NUM_CPUS - 1)))
+# Distribute RPS flows evenly
 BUFFER_SIZE=16384
 echo $BUFFER_SIZE | sudo tee /proc/sys/net/core/rps_sock_flow_entries;
 num_queues=$(ls /sys/class/net/eth0/queues/ | grep rx | wc -l);
 flow_cnt=$(($BUFFER_SIZE / num_queues));
 for i in $(seq 0 $((num_queues - 1))); do
   echo $flow_cnt | sudo tee /sys/class/net/eth0/queues/rx-$i/rps_flow_cnt;
+  echo $cpus | sudo tee /sys/class/net/eth0/queues/rx-$i/rps_cpus;
 done;
 ```
-
+> `NUM_CPUS=$(nproc);`
+> `cpus=$(printf '%x' $((2**$NUM_CPUS - 1)))`
+> - Determines the number of CPUs available for RPS
+>
 > `BUFFER_SIZE=16384; echo $BUFFER_SIZE | sudo tee /proc/sys/net/core/rps_sock_flow_entries`:
 > - Configures the system-wide RPS flow entry limit
 > - Determines how many concurrent network flows can be tracked
@@ -61,6 +70,7 @@ done;
 > ```bash
 > for i in $(seq 0 $((num_queues - 1))); do
 >   echo $flow_cnt | sudo tee /sys/class/net/eth0/queues/rx-$i/rps_flow_cnt;
+>   echo $cpus | sudo tee /sys/class/net/eth0/queues/rx-$i/rps_cpus;
 > done
 > ```
 > - Configures each RX queue with its allocated flow count
@@ -79,4 +89,11 @@ It's worth mentioning as well that these optimizations come with their own trade
 
 - [1] Kafka documentation for OS tuning: <https://kafka.apache.org/documentation/#os>
 - [2] Kernel documentation on scaling networking stack: <https://www.kernel.org/doc/html/latest/networking/scaling.html> 
+
+----
+
+Updates:
+
+- 2025-03-15: Expanded the script to include `rps_cpus` configuration for each RX queue.
+This is key to ensure that the flows are distributed across the available CPUs.
 

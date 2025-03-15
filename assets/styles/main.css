@@ -274,3 +274,9 @@ footer p {
   font-size: 0.75rem;
   font-weight: 300;
 }
+
+hr {
+  border-top: 1.5px solid #000000;
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
+}

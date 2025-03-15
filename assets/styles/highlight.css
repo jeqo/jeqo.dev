@@ -210,6 +210,7 @@ code.lua .attribute {
 }
 
 
+// YAML
 code.yaml {}
 
 code.yaml .key {
@@ -239,3 +240,57 @@ code.yaml .anchor {
 code.yaml .tag {
   color: var(--magenta);
 }
+
+// Java
+code.java {
+  color: var(--comment-gray); /* Default text color */
+}
+
+code.java .keyword {
+  color: var(--light-red);
+}
+
+code.java .string {
+  color: var(--dark-yellow);
+}
+
+code.java .numeric.constant {
+  color: var(--magenta);
+}
+
+code.java .boolean.constant {
+  color: var(--light-red);
+}
+
+code.java .class {
+  color: var(--light-yellow);
+}
+
+code.java .function {
+  color: var(--blue);
+}
+
+code.java .variable {
+  color: var(--cyan);
+}
+
+code.java .comment {
+  color: var(--comment-gray);
+}
+
+code.java .annotation {
+  color: var(--magenta);
+}
+
+code.java .type {
+  color: var(--light-yellow);
+}
+
+code.java .punctuation {
+  color: var(--cyan);
+}
+
+code.java .operator {
+  color: var(--light-red);
+}
+

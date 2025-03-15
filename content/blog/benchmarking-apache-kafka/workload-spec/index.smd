@@ -13,14 +13,12 @@
 --- 
 
 In the [previous post](/blog/benchmarking-apache-kafka/intro-omb), we got started with the OpenMessaging Benchmark (OMB) framework. 
-Now let's dive into the types of workloads that can be modeled.
-
-Before we dive into the workload types, let's look into how a Workload is specified in OMB.
+Now let's dive into how workload specifications work.
 For this need to look into 4 core concepts: Benchmark execution times, Throughput definition, Topic topology, and Producer/Consumer Topology
 
 ## Topic topology
 
-In OMB, topic topology is pretty straighforward to configure: you define the number of topics and the number of partitions per topic.
+In OMB, topic topology is pretty straightforward to configure: you define the number of topics and the number of partitions per topic.
 
 ```yaml
 topics: 100
@@ -30,6 +28,7 @@ partitionsPerTopic: 12
 In this example, 100 topics are created, each with 12 partitions.
 
 However, this configuration has subtle implications on the benchmark's scheduling and execution.
+Let's look into those.
 
 ## Producer and consumer topology
 
@@ -45,31 +44,34 @@ consumerPerSubscription: 3
 
 In this example, each topic will have 3 producers and 3 consumer groups, each with 3 consumers.
 
-Then, these producers have to be distributed across the workers.
+But how are these producers and consumers distributed across the workers?
+
 By default, OMB workers are divided in half into producers and consumers.
 This means that in a distributed environment, you need at least 2 workers to run a benchmark;
-one for the producers and one for the consumers.
+one for producers and one for consumers.
 
 > If you want to distribute producers and consumers across multiple AZs, you will need 2 * AZs workers.
 
-Knowing this, ensure that the producer assignments (producers * number of topics) and consumer assignments
-(suscription * consumers per suscription * number of topics) are properly distributed across the workers.
+This context is helpful to ensuret that the producer assignments (producers * number of topics) and consumer assignments
+(subscription * consumers per subscription * number of topics) are properly distributed across the workers.
+
+> There's not guarantee on the ordering though.
+> Each assignment is shuffled before being distributed across the workers.
 
 > There's an option to have extra workers for consumers (2/3 of the workers for consumers and 1/3 for producers), 
 using the `-x` flag when running the benchmark.
 
-At this point, we have a clear understanding of the topic and client topology, and how these are distributed across the workers.
-
 ## Benchmark execution periods
 
-Benchmark executions have these main periods:
+During a benchmark execution, there are three main time periods to consider:
 
-- **Bootstrap time**: This is when the environment is set up, including topic creation, and testing producers and consumers can write and read messages.
+- **Bootstrap time**: This is when the environment is set up, including topic creation and testing producers and consumers can write and read messages.
 This phase is usually short and is not part of the benchmark's defined periods.
 - **Warm-up time**: Once the topology is set up, the warm-up period begins.
 This is the initial period where the system is ramped up to the desired throughput.
 This phase is essential to stabilize the system and ensure consistent performance measurements.
 It's commonly shorter than the run time but can vary based on the workload type.
+By default, the warm-up time is 1 minute.
 - **Run time**: The period where the system is running at the desired throughput.
 This phase is used to collect performance metrics and evaluate the system's behavior under load.
 It should be long enough to capture the system's steady-state performance, and follows the warmup time.
@@ -87,7 +89,7 @@ There's another optional execution time, but it's specific to a workload type, w
 
 ## Throughput definition
 
-Let's also clarify what we mean by "throughput" in the context of OMB. 
+Let's also clarify what we mean by _throughput_ in the context of OMB. 
 Throughput is defined by the producer rate (messages per second) and the message sizing (in bytes).
 
 In OMB, the producer rate is the number of messages produced per second by _all_ producers.
@@ -122,6 +124,28 @@ randomizedPayloadPoolSize: 1000
 This configuration generates messages with a size of 1024 bytes, where 80% of the bytes are random and the rest are fixed.
 1000 different payloads are generated, and each worker will randomly select one of these payloads to send.
 
+Additionally, you can configure what type of message key distribution you want to use:
+
+```yaml
+keyDistributor: "NO_KEY" # default, values: NO_KEY, KEY_ROUND_ROBIN, RANDOM_NANO
+```
+
+For reference, the available key distributor type descriptions are:
+
+```java
+public enum KeyDistributorType {
+    /** Key distributor that returns null keys to have default publish semantics. */
+    @JsonEnumDefaultValue
+    NO_KEY,
+
+    /** Genarate a finite number of "keys" and cycle through them in round-robin fashion. */
+    KEY_ROUND_ROBIN,
+
+    /** Random distribution based on System.nanoTime(). */
+    RANDOM_NANO,
+}
+```
+
 ## Workload types
 
 Now that benchmark periods and throughput are defined, let's explore the different workload types available in OMB.
@@ -139,6 +163,12 @@ Ideally, once the maximum sustainable throughput is found, it's maintained while
 When building a backlog, consumers are paused, and producers continue to produce messages until a specified backlog size is reached.
 It uses the fixed throughput mode to build a backlog of messages before starting the run time phase where consumers process the backlog and then maintain the fixed throughput.
 
+Let's look deeper into each of these workload types.
+
+In my distributed OMB setup I have 6 workers across 3 AZs, 2 workers per AZ.
+As a target, I have an Aiven Kafka service with 3 brokers.
+They are all in the same region, so the network latency and cost is minimized.
+
 ### Fixed throughput
 
 Fixed throughput is the most common workload type and is relatively straightforward to run. 
@@ -146,19 +176,100 @@ The goal is to maintain a stable throughput throughout the benchmark execution.
 
 By defining a producer rage higher than zero the workload will be considered as fixed throughput.
 
+```yaml
+name: "Fixed Throughput"
+# Benchmark periods
+testDurationMinutes: 10
+
+# Topic topology
+topics: 10
+partitionsPerTopic: 12
+
+# Throughput
+producerRate: 20000
+messageSize: 1024
+useRandomizedPayloads: true
+randomBytesRatio: 0.9
+randomizedPayloadPoolSize: 1000
+
+# Producers and consumers
+producersPerTopic: 3
+subscriptionsPerTopic: 3
+consumerPerSubscription: 3
+```
+
+Here's is how the cluster load would look like:
+
+// TODO add image
+
 ### Maximum throughput
 
 By defining a producer rate of zero, the workload will be considered as max throughput.
 The initial producer rate is defined at 10K messages per second, and then it will adjust based on the observed latencies.
 
+```yaml
+name: "Max Throughput"
+# Benchmark periods
+testDurationMinutes: 10
+
+# Topic topology
+topics: 10
+partitionsPerTopic: 12
+
+# Throughput
+producerRate: 0 # max throughput
+messageSize: 1024
+useRandomizedPayloads: true
+randomBytesRatio: 0.9
+randomizedPayloadPoolSize: 1000
+
+# Producers and consumers
+producersPerTopic: 3
+subscriptionsPerTopic: 3
+consumerPerSubscription: 3
+```
+
+Here's is how the cluster load would look like:
+
+// TODO add image
 
 ### Consumer backlog
 
 Consumer backlog is a more niche workload type that simulates the behavior of a cluster when older data needs to be reprocessed.
 It builds on the fixed throughput mode but adds a backlog-building phase before the run time.
 
-The main challenge with this mode is that it's based on the fixed mode, so if you want to build a large backlog, you'll have to wait linearly based on the fixed throughput.
-In my wish list, I'd like to have two throughput modes: one to build the backlog (e.g., max or just a high throughput) and another to maintain throughput while consuming the backlog.
+```yaml
+name: "Consumer Backlog"
+# Benchmark periods
+testDurationMinutes: 10
+
+# Topic topology
+topics: 10
+partitionsPerTopic: 12
+
+# Throughput
+producerRate: 20000
+messageSize: 1024
+useRandomizedPayloads: true
+randomBytesRatio: 0.9
+randomizedPayloadPoolSize: 1000
+
+# Producers and consumers
+producersPerTopic: 3
+subscriptionsPerTopic: 3
+consumerPerSubscription: 3
+
+# Consumer backlog
+consumerBacklogSizeGB: 10
+```
+
+Here's is how the cluster load would look like:
+
+// TODO add image
+
+The main challenge I've found with this mode is that it's based on the fixed rate, so if you want to build a large backlog, you'll have to wait linearly based on the fixed throughput.
+In my wish list, I'd like to have two throughput modes: 
+one to build the backlog (e.g., max or just a high throughput) and another to maintain throughput while consuming the backlog.
 
 ---
 

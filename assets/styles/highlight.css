@@ -208,3 +208,34 @@ code.lua .qualifier,
 code.lua .attribute {
   color: var(--light-red);
 }
+
+
+code.yaml {}
+
+code.yaml .key {
+  color: var(--light-yellow);
+}
+
+code.yaml .string {
+  color: var(--dark-yellow);
+}
+
+code.yaml .numeric.constant {
+  color: var(--magenta);
+}
+
+code.yaml .boolean.constant {
+  color: var(--light-red);
+}
+
+code.yaml .punctuation {
+  color: var(--cyan);
+}
+
+code.yaml .anchor {
+  color: var(--blue);
+}
+
+code.yaml .tag {
+  color: var(--magenta);
+}

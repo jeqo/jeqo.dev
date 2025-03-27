@@ -12,8 +12,8 @@
 .draft = true,
 --- 
 
-In the [previous post](/blog/benchmarking-apache-kafka/intro-omb), we got started with the OpenMessaging Benchmark (OMB) framework. 
-Now let's dive into how workload specifications work.
+In the [previous post](/blog/benchmarking-apache-kafka/intro-omb), OpenMessaging Benchmark (OMB) framework was presented and how to run it locally. 
+Now let's dive into how workload specifications are defined and their different execution modes.
 For this need to look into 4 core concepts: Benchmark execution times, Throughput definition, Topic topology, and Producer/Consumer Topology
 
 ## Topic topology
@@ -156,7 +156,7 @@ Understanding these workload patterns is essential for accurately simulating rea
 
 - **Fixed throughput**: The producers and consumers aim to maintain a specified (fixed) throughput. This throughput is applied during both warmup and run time.
 
-- **Max throughput**: The producers aren't bounded by a specified throughput limit. Based on observed _backlog_ (`totalPublished - totalReceived`), producers dynamically increase or decrease throughput. 
+- **Max throughput**: The producers aren't bounded by a specified throughput limit. Based on observed _backlog_ (i.e. lag, `totalMsgsPublished - totalMsgsReceived`), producers dynamically increase or decrease throughput. 
 Ideally, once the maximum sustainable throughput is found, it's maintained while the cluster is tested. During both warm-up and run time, producers continuously adjust as the throughput is evaluated.
 
 - **Consumer backlog**: This mode builds on the fixed throughput approach but expands benchmark phases to three distinct periods: warm-up, backlog building time, and run time.
@@ -198,11 +198,18 @@ subscriptionsPerTopic: 3
 consumerPerSubscription: 3
 ```
 
-Here's is how the cluster load would look like:
+Here is how the cluster load would look like:
 
-// TODO add image
+[]($image.asset('fixed-throughput.png'))
+
+As you could observe, the ingress throughput is growing at warm-up time (1min) and stabilizes on ~20MB/s at run time.
+Similarly, egress throughput grows until ~60MB/s (20MB/s ingress * 3 consumers per subscription) and stabilizes until the benchmark finishes.
+
+From the results, it looks like the broker can handle the load, but it's worth checking the broker's metrics to see if it's not hitting any limits.
 
 ### Maximum throughput
+
+Fixed throughput is good when a known throughput is expected, but what if you want to test the cluster's maximum throughput for a given configuration?
 
 By defining a producer rate of zero, the workload will be considered as max throughput.
 The initial producer rate is defined at 10K messages per second, and then it will adjust based on the observed latencies.
@@ -229,9 +236,14 @@ subscriptionsPerTopic: 3
 consumerPerSubscription: 3
 ```
 
-Here's is how the cluster load would look like:
+Here is how the cluster load would look like:
 
-// TODO add image
+[]($image.asset('max-throughput.png'))
+
+This is a more dynamic workload type where the producers adjust their throughput based on the observed lags.
+The ingress throughput grow and stabilize ~325MB/s, while the egress throughput grows and stabilizes ~975MB/s.
+
+This mode is useful to understand the cluster's limits and how it behaves under different loads.
 
 ### Consumer backlog
 
@@ -263,22 +275,28 @@ consumerPerSubscription: 3
 consumerBacklogSizeGB: 10
 ```
 
-Here's is how the cluster load would look like:
+Here is how the cluster load would look like:
 
-// TODO add image
+[]($image.asset('consumer-backlog.png'))
+
+In this mode, there is the additional period of backlog building, where the producers continue to produce messages until the backlog size is reached.
+So, there is the initial warm-up of 1 minute at 20MB/s in, 60MB/s out; then the consumers are turned off, and the producers continue to produce messages until the backlog size is reached.
+When the backlog is reached, the consumers are turned on, and the producers maintain the fixed throughput.
+
+This mode is useful to understand how the cluster behaves when there is a need to reprocess older data or hit "colder" data, either on disk, or on remote storage when Tiered Storage is enabled.
 
 The main challenge I've found with this mode is that it's based on the fixed rate, so if you want to build a large backlog, you'll have to wait linearly based on the fixed throughput.
 In my wish list, I'd like to have two throughput modes: 
 one to build the backlog (e.g., max or just a high throughput) and another to maintain throughput while consuming the backlog.
 
----
+## Summary
 
-Additional ideas:
-Something I haven't play much with yet is with a mixed benchmark where the modes can be mixed: so you could run a fixed thoruhgput let's say to simulate the current load on a cluster, and while that is running have another OMB cluster running any other of the modes to explore how an existing cluster would behave when increasing the load.
+In this post, we've explored how to define different workload types in OMB, focusing on fixed throughput, max throughput, and consumer backlog.
+Each workload type has its own characteristics and is useful for different testing scenarios.
 
-Of course, these workload models can only take you so far as there many other things that are hard to test, like number of connections, reconnections, mis-configured clients, having multiple applications with a mix of configurations that may stress the cluster in specific ways.
+By understanding how to configure benchmark periods, throughput, topic topology, and producer/consumer topology, you can create workloads that simulate real-world scenarios and uncover performance characteristics that matter to your specific use case.
 
-Nevertheless, the OMB can help to simulate a good bunch of scenarios, mix and match their workload types, and apply operations on top to test certain behaviors, e.g. what happen when a rolling restart happens in the middle of a benchmark; what if we enable TS for all the topics while running a benchmark; or some other specific example.
+These workloads could even be mixed to simulate more complex scenarios, like a fixed throughput benchmark running while a max throughput benchmark is also running, or a consumer backlog benchmark running while a fixed throughput benchmark is running.
 
-In a following post I'd like to explore a bit more how does the topic and client topology works in OMB; and how it does get distributed across OMB workers.
+Keep in mind that each of these workloads are highly dependent on the topic and client topology, and how they are tuned and distributed across the OMB workers.
 

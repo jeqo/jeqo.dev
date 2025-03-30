@@ -140,16 +140,71 @@ code.ziggy-schema .function {
   color: var(--blue);
 }
 
-
 code.markdown {
-  color: #ccc;
+  color: #ccc; /* Default text color */
 }
 
-
+/* Headings */
 code.markdown .text.title {
   color: var(--light-red);
 }
 
+/* Bold text */
+code.markdown .text.bold {
+  color: var(--light-yellow);
+  font-weight: bold;
+}
+
+/* Italic text */
+code.markdown .text.italic {
+  color: var(--dark-yellow);
+  font-style: italic;
+}
+
+/* Links */
+code.markdown .link {
+  color: var(--blue);
+}
+
+code.markdown .link.url {
+  color: var(--cyan);
+}
+
+/* Code blocks and inline code */
+code.markdown .code {
+  color: var(--magenta);
+}
+
+/* Blockquotes */
+code.markdown .quote {
+  color: var(--dark-yellow);
+}
+
+/* Lists */
+code.markdown .list {
+  color: var(--light-yellow);
+}
+
+/* List item markers */
+code.markdown .list.marker {
+  color: var(--blue);
+}
+
+/* Images */
+code.markdown .image {
+  color: var(--cyan);
+}
+
+code.markdown .image.url {
+  color: var(--magenta);
+}
+
+/* Horizontal rules */
+code.markdown .hr {
+  color: var(--comment-gray);
+}
+
+/* General punctuation */
 code.markdown .punctuation {
   color: var(--light-red);
 }

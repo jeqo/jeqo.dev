@@ -15,13 +15,15 @@
 This is the second post in a series about benchmarking Apache Kafka using OpenMessaging Benchmark (OMB).
 In the [previous post](/blog/benchmarking-apache-kafka/intro-omb), the OMB framework was presented, together with guidance on how to run it locally.
 
-Now let's dive into the distributed mode, how are workers deployed across multiple nodes, and how to define the workload topology.
+Now let's dive into its distributed mode: how are workers deployed across multiple nodes, and how to define the workload topology.
 
 In local mode, all components run in a single process, which is ideal for getting started and initial testing. 
-However, for production-like performance testing, deploying workers across multiple nodes is key to achieve higher throughput and represent real-world scenarios better.
+However, for production-like performance testing, deploying workers across multiple nodes is key to achieve higher throughput and better represent real-world scenarios.
 
-The distributed mode consists of deploying workers across multiple nodes, each exposing a REST endpoint. 
-The benchmark CLI uses these endpoints to coordinate the workload execution (e.g. create producers on this worker, create consumers on this other one).
+The distributed mode consists in deploying workers across multiple nodes, 
+each exposing an HTTP endpoint to schedule work and gather stats. 
+The benchmark CLI uses this endpoint to coordinate the workload execution 
+(e.g., create producers on this worker, create consumers on this other one, and collect metrics to aggregate them locally).
 
 ```markdown
 [CLI Node]
@@ -45,22 +47,22 @@ The benchmark CLI uses these endpoints to coordinate the workload execution (e.g
 
 ## Provisioning Workers
 
-OMB workers running in distributed mode are Java server processes that expose a REST API to receive commands from the benchmark CLI to run workload assignments (i.e. producers and consumers).
+OMB workers can be deployed in any environment, as long as they can access the Kafka cluster.
+They don't need to coordinate between each other, but they need to be accessible from the node running the CLI.
 
-These workers can be deployed in any environment, as long as they can access the Kafka cluster.
-The preferred way is to run them as VMs or containers in the same network (e.g. same cloud region, and probably using private IPs to reduce inter-AZ costs[[4](https://blog.2minutestreaming.com/p/basic-aws-networking-costs)]) as the Kafka cluster to minimize network latency.
-
+The most common way to deploy them seems to be as VMs or containers. 
 The OMB repository provides Terraform scripts[[1](https://github.com/openmessaging/benchmark/blob/master/driver-kafka/deploy/hdd-deployment)] 
 to deploy workers on AWS, and Alibaba Cloud; 
-and Ansible playbooks[[2](https://github.com/openmessaging/benchmark/blob/master/driver-kafka/deploy/hdd-deployment/deploy.yaml)] to install the required dependencies and start the workers.
+and Ansible playbooks[[2](https://github.com/openmessaging/benchmark/blob/master/driver-kafka/deploy/hdd-deployment/deploy.yaml)] 
+to install the required dependencies and start the workers.
 These include deploying a Kafka cluster and Zookeeper ensemble, and the OMB workers.
-In my experience, this is useful as a template to start with, but you will need to adjust the scripts to fit your environment
-(e.g. remove Kafka cluster deployment as you may already have one to test, adjust versions, instrumenting workers with metrics agents and profilers, etc.).
+Although these are useful, they would mostly serve as a template to start with as you will need to adjust the scripts to fit your environment
+(e.g., remove Kafka cluster deployment as you may already have one to test, adjust versions, instrumenting workers with metrics agents and profilers, etc.).
 
-I haven't been able to find any official Docker image or setup to run OMB workers, so you may need to build your own Docker image with the required dependencies and scripts to start the workers.
-As a reference, I have created a simple Docker image for OMB workers based on this scripts to test this locally as a Docker Compose setup, have a look: https://github.com/jeqo/docker-composes/tree/main/openmessaging-benchmark
+To run them as containers, OMB repository also provides a Helm chart[[11](https://github.com/openmessaging/benchmark/tree/master/deployment/kubernetes/helm)]
+to deploy workers on a Kubernetes cluster.
 
-Once the workers are deployed and running, there are 2 ports exposed: one for the REST API to schedule assignments, and another for stats collection.
+To start a worker, run the following command defining the main port and the port for Prometheus stats collection:
 
 ```bash
 ./bin/benchmark-worker \
@@ -68,7 +70,10 @@ Once the workers are deployed and running, there are 2 ports exposed: one for th
     --stats-port 8081
 ```
 
-The CLI will have to provide a list of workers to use for the benchmark:
+The stats endpoint only contains OMB and JVM metrics in Prometheus format; however it does not include Kafka client specific metrics.
+Prometheus JMX exporter could be used to gather these.
+
+When running the CLI, the workers list have to be provided either by listing them directly:
 
 ```bash
 ./bin/benchmark \
@@ -77,37 +82,86 @@ The CLI will have to provide a list of workers to use for the benchmark:
     workload.yaml
 ```
 
-## Workers distribution
-
-Any benchmark workload includes a set of producers and consumers, and these need to be assigned to specific workers. This means that a Worker is either a producer or a consumer, but not both.
-
-So there's the first limitation when trying to run a workload on a distributed setup: the minimum number of workers is 2: one for producers and another for consumers.
-And the number of workers will be split in half between producers and consumers---unless you have a specific type of workload that requires more consumers than producers, where you can assign extra workers to consumers (2/3 consumers, 1/3 producers)[[3](https://github.com/openmessaging/benchmark/blob/8f7d5d65ef63d87140b5908945df4b2bfdd4645a/benchmark-framework/src/main/java/io/openmessaging/benchmark/worker/DistributedWorkersEnsemble.java#L67-L74)].
-
-The clients (producers, consumers, and the admin used to create the topics) are created on the workers using the configurations provided on the Driver specification, and the workers are responsible for managing the client lifecycle (e.g. start, stop, pause, resume, etc.).
-We won't go into the details of the client configuration in this post; for optimizations there is this good documentation to explore: https://docs.confluent.io/cloud/current/client-apps/optimizing/overview.html.
-
-### Rack-awareness
-
-Running Kafka clusters in a single rack/zone reduces the availability promises of the system.
-This is why it is recommended to run Kafka clusters across multiple racks/zones to ensure high availability; although the latencies and--specially-- the costs attached to this setup considerably higher[[10](https://blog.2minutestreaming.com/p/the-real-apache-kafka-cost)].
-
-If running clusters on a single rack (e.g., in a single Availability Zone), the default setup may suffice to distribute the load across workers.
-However, if running across multiple zones, you may want to deploy workers in a rack-aware manner to properly distribute the load across zones.
-If trying Kafka-compatible systems that support leaderless writes with AZ-awareness (e.g. Warpstream[[5](https://docs.warpstream.com/warpstream/byoc/configure-kafka-client/configure-clients-to-eliminate-az-networking-costs)]),
-you may want to flag workers with the zone they are running in to pass this information to the Kafka clients.
-
-There is a hidden (i.e. undocumented) feature in OMB to define a `zone.id` property:
+Or passing them from a file:
 
 ```bash
-[Service]
-ExecStart=/opt/benchmark/bin/benchmark-worker
-Environment='JVM_OPTS=-Dzone.id={{ az }}'
+./bin/benchmark \
+    --worker-file workers.yaml \
+    --driver driver.yaml \
+    workload.yaml
 ```
 
-That is used to pass the zone from the worker process to the `client.id` property:
+```yaml
+workers:
+  - http://worker0:8080
+  - http://worker1:8080
+```
 
-If on the Driver configuration you have a `client.id` property:
+## Client distribution
+
+Any benchmark workload includes a set of producers and consumers, and these need to be assigned to specific workers.
+This means that a Worker can be either a producer or a consumer, but not both.
+
+> This is the first limitation when trying to run a workload on a distributed setup: the minimum number of workers is 2: one for producers and another for consumers.
+
+The number of workers will be split in half between producers and consumers
+---unless you have a specific type of workload that requires more consumers than producers, where you can assign extra workers to consumers (2/3 consumers, 1/3 producers)
+[[3](https://github.com/openmessaging/benchmark/blob/8f7d5d65ef63d87140b5908945df4b2bfdd4645a/benchmark-framework/src/main/java/io/openmessaging/benchmark/worker/DistributedWorkersEnsemble.java#L67-L74)].
+
+```markdown
+[CLI Node]
+   |
+   | HTTP connections
+   |
+   v
+[Worker List File]
+   |
+   |---------------|---------------|
+   v               v               v
+[Worker 1]     [Worker 2]      [Worker 3]
+ Producer       Producer       Producer
+   |               |               |
+   v               v               v
+[Worker 4]     [Worker 5]      [Worker 6]
+ Consumer       Consumer       Consumer
+   |               |               |
+   |---------------|---------------|
+   v
+[Kafka Cluster]
+```
+
+The kafka clients are created on the workers using the configurations provided on the Driver specification, 
+and the workers are responsible for managing the client lifecycle (e.g., start, stop, pause, resume, etc.).
+We won't go into the details of the client configuration in this post; 
+for scenarios to optimize for there is this good Confluent documentation to explore: https://docs.confluent.io/cloud/current/client-apps/optimizing/overview.html.
+
+### Workers and AZ distribution
+
+OMB workers are usually deployed in the same network as the Kafka cluster to minimize network latency
+(e.g., same cloud region, and probably using private IPs to reduce inter-AZ costs[[4](https://blog.2minutestreaming.com/p/basic-aws-networking-costs)]) 
+.
+
+Running Kafka clusters in a single rack/zone reduces the availability promises of the system.
+This is why it is recommended to run Kafka clusters across multiple racks/zones to ensure high availability; although the latencies and--specially--the costs attached to this setup are considerably higher
+[[10](https://blog.2minutestreaming.com/p/the-real-apache-kafka-cost)].
+
+If running clusters on a single rack (e.g., in a single Availability Zone), the default setup may suffice to distribute the load across workers.
+However, if running a Kafka cluster across multiple zones, you most probably want to deploy workers across zones as well to properly simulate client's distribution.
+
+Since Follower-fetching feature was added to Kafka, it has started to be possible to flag which zone/rack a client is running on by adding a `client.rack` configuration. 
+More recently, Kafka-compatible systems that support leaderless producers with AZ-awareness 
+(e.g., Warpstream[[5](https://docs.warpstream.com/warpstream/byoc/configure-kafka-client/configure-clients-to-eliminate-az-networking-costs)]),
+use the `client.id` to gather this metadata from.
+
+There is a hidden (i.e. undocumented[[13](https://github.com/openmessaging/benchmark/pull/426)]) feature in OMB to define a Java system property `zone.id`:
+
+```bash
+export JVM_OPTS=-Dzone.id={{ az }}
+/opt/benchmark/bin/benchmark-worker
+```
+
+The framework replaces `{zone.id}` with the value of the `zone.id` property from the worker process
+[[9](https://github.com/openmessaging/benchmark/blob/b10b22767f8063321c90bc9ee1b0aadc5902c31a/driver-kafka/src/main/java/io/openmessaging/benchmark/driver/kafka/KafkaBenchmarkDriver.java#L69-L74)].
 
 ```yaml
 name: kafka-local
@@ -122,30 +176,58 @@ consumerConfig: |
   auto.offset.reset=earliest
 ```
 
-The framework will replace `{zone.id}` with the value of the `zone.id` property from the worker process[[9](https://github.com/openmessaging/benchmark/blob/b10b22767f8063321c90bc9ee1b0aadc5902c31a/driver-kafka/src/main/java/io/openmessaging/benchmark/driver/kafka/KafkaBenchmarkDriver.java#L69-L74)].
-
-The Kafka broker would need to know how to extract this information and use it for client AZ-awareness.
-
-OMB could be extended to pass this information to the `client.rack` as well.
-This would allow testing another Kafka features like Follower Fetching, and---if KIP-1123[[6](https://cwiki.apache.org/confluence/display/KAFKA/KIP-1123%3A+Rack-aware+partitioning+for+Kafka+Producer)]
+> OMB could be extended to pass this information to the `client.rack` as well[[12](https://github.com/openmessaging/benchmark/pull/427)].
+> This would allow testing another Kafka features like Follower Fetching, 
+> and---if KIP-1123[[6](https://cwiki.apache.org/confluence/display/KAFKA/KIP-1123%3A+Rack-aware+partitioning+for+Kafka+Producer)]
 is adopted---Producer rack-awareness.
 
-In this scenario, consider having `N * zones` workers, where N is the number of workers per zone (at least 2).
+Kafka brokers would need to know how to extract this information and use it for client AZ-awareness.
+
+When distributing workers across zones, consider having `N * zones` workers---where N is the number of workers per zone (at least 2).
+
+```markdown
+[CLI Node]
+   |
+   | HTTP connections
+   |
+   v
+[Worker List File]
+   |
+   |---------------|---------------|
+   v               v               v
+[Worker 1]     [Worker 2]      [Worker 3]
+ Producer       Producer       Producer
+  AZ0             AZ1             AZ2
+   |               |               |
+   v               v               v
+[Worker 4]     [Worker 5]      [Worker 6]
+ Consumer       Consumer       Consumer
+  AZ0             AZ1             AZ2
+   |               |               |
+   |---------------|---------------|
+   v               v               v
+[Broker 0]     [Broker 1]      [Broker 2]
+  AZ0             AZ1             AZ2
+```
 
 ## Workload topology
 
+Number of topics, partition, producers and consumers define how the benchmark works end-to-end. 
+These are defined as part of the Workload specification.
+
 ### Topic topology
 
-In OMB, topic topology is pretty straightforward to configure: you define the number of topics and the number of partitions per topic.
+In OMB, topic topology is pretty straightforward to configure: 
+you define the number of topics and the number of partitions per topic.
 
 ```yaml
-topics: 100
+topics: 10
 partitionsPerTopic: 12
 ```
 
-In this example, 100 topics are created, each with 12 partitions.
+In this example, 10 topics are created, each with 12 partitions: new 120 partitions to be created.
 
-However, this configuration has subtle implications on the benchmark's scheduling and execution.
+Though minimal, these configurations have subtle implications on the benchmark's scheduling and execution.
 Let's look into those.
 
 ### Producer and consumer topology
@@ -154,36 +236,41 @@ The number of producers and consumer groups are defined by the number of topics:
 
 ```yaml
 # producers
-producersPerTopic: 3
+producersPerTopic: 6
 # consumers
 subscriptionsPerTopic: 3
-consumerPerSubscription: 3
+consumerPerSubscription: 6
 ```
 
-In this example, each topic will have 3 producers and 3 consumer groups, each with 3 consumers.
+In this example, each topic will have 6 producers per topic; and 3 consumer groups, each with 6 consumers, per topic:
+60 producer clients; and 30 consumer groups, 180 consumer instances in total.
 
-Knowing that workers are split in half between producers and consumers is helpful to ensure that the producer assignments (producers * number of topics) and consumer assignments
-(subscription * consumers per subscription * number of topics) are properly distributed across the workers.
+Knowing that workers are split in half between producers and consumers is helpful to ensure that 
+producer assignments (producers * number of topics) 
+and consumer assignments (subscription * consumers per subscription * number of topics) 
+are properly distributed across the workers.
 
 > There is not guarantee on assignment ordering though.
-> Each assignment is shuffled before being distributed across the workers[[7](https://github.com/openmessaging/benchmark/blob/b10b22767f8063321c90bc9ee1b0aadc5902c31a/benchmark-framework/src/main/java/io/openmessaging/benchmark/WorkloadGenerator.java#L256-L263)][[8](https://github.com/openmessaging/benchmark/blob/b10b22767f8063321c90bc9ee1b0aadc5902c31a/benchmark-framework/src/main/java/io/openmessaging/benchmark/WorkloadGenerator.java#L231-L244)].
+> Each assignment is shuffled before being distributed across the workers
+> [[7](https://github.com/openmessaging/benchmark/blob/b10b22767f8063321c90bc9ee1b0aadc5902c31a/benchmark-framework/src/main/java/io/openmessaging/benchmark/WorkloadGenerator.java#L256-L263)]
+> [[8](https://github.com/openmessaging/benchmark/blob/b10b22767f8063321c90bc9ee1b0aadc5902c31a/benchmark-framework/src/main/java/io/openmessaging/benchmark/WorkloadGenerator.java#L231-L244)].
 
 I haven't covered Workload examples in more detail as I plan to dive into that in a separate post where we will look into how to define the workload and experiment with different workload types.
 
-## Troublshooting
+## Troubleshooting
 
+You may hit some common issues while trying to start your benchmark on a distributed OMB setup.
 Workers may fail to start, to connect to a Kafka cluster, to create a topic, etc.
-Here are some common issues and how to troubleshoot them:
 
-Workers write logs into a `benchmark-worker.log` file.
-This is a good place to start looking for errors if something is not working as expected.
+A good starting point to troubleshoot them is to look into the 
+`benchmark-worker.log` file at the OMB installation directory.
 
-To get an actual failure on the CLI you may need to wait until `default.api.timeout.ms` (default 60s) is reached.
-Tune it if you need to get faster feedback on failures.
+To get an actual failure on the CLI you may need to wait for a minute until workers HTTP client request timeout or kafka clients `default.api.timeout.ms` is reached.
 
-In some scenarios the workers may be the bootleneck of the benchmark (e.g. small instance types, not enough resources, non-optimized configurations, etc.).
-Low level metrics (e.g. CPU, memory, network, disk) can help identify these issues.
-But it may be useful to monitor the worker client-level metrics (e.g. producer/consumer lag, throughput, etc.) to identify bottlenecks at the client level; for instance using Prometheus JMX exporter.
+In some scenarios the workers may be the bottleneck of the benchmark (e.g., small instance types, not enough resources, non-optimized configurations, etc.).
+Low level metrics (e.g., CPU, memory, network, disk) can help identify these issues,
+but it is useful to monitor the worker client-level metrics (e.g., producer/consumer lag, throughput, etc.) 
+to identify bottlenecks at the client level; for instance using Prometheus JMX exporter.
 
 ## References
 
@@ -197,4 +284,7 @@ But it may be useful to monitor the worker client-level metrics (e.g. producer/c
 * [8]: Consumer assignment shuffling: https://github.com/openmessaging/benchmark/blob/b10b22767f8063321c90bc9ee1b0aadc5902c31a/benchmark-framework/src/main/java/io/openmessaging/benchmark/WorkloadGenerator.java#L231-L244
 * [9]: Client ID zone parsing: https://github.com/openmessaging/benchmark/blob/b10b22767f8063321c90bc9ee1b0aadc5902c31a/driver-kafka/src/main/java/io/openmessaging/benchmark/driver/kafka/KafkaBenchmarkDriver.java#L69-L74
 * [10]: The real Apache Kafka cost: https://blog.2minutestreaming.com/p/the-real-apache-kafka-cost
+* [11]: OMB Helm charts: https://github.com/openmessaging/benchmark/tree/master/deployment/kubernetes/helm
+* [12]: OMB PR to add zone id parsing for client.rack: https://github.com/openmessaging/benchmark/pull/427
+* [13]: OMB PR to expand zone id to producer and consumer configs while also documenting the feature: https://github.com/openmessaging/benchmark/pull/426
 

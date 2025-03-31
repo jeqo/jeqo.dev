@@ -1,7 +1,7 @@
 ---
 .title = "Benchmarking Kafka: Distributed Workers and Workload topology in OpenMessaging Benchmark",
 .description = "Dive into OpenMessaging Benchmark's distributed mode and how clients are deployed across multiple workers",
-.date = @date("2025-03-30"),
+.date = @date("2025-03-31"),
 .author = "Jorge Esteban Quilcate Otoya",
 .layout = "post.shtml",
 .tags = [
@@ -9,7 +9,7 @@
   "apache-kafka",
   "performance",
 ],
-.draft = true,
+.draft = false,
 --- 
 
 This is the second post in a series about benchmarking Apache Kafka using OpenMessaging Benchmark (OMB).

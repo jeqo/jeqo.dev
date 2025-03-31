@@ -315,6 +315,7 @@ This is the second post in a series about benchmarking Apache Kafka using OMB.
 In the next post we will look into how to define the workload and experiment with different workload types.
 This should cover how the benchmark execution phases work, how to define the workload type, and how do they look like.
 
+[]($section.id('refs'))
 ## References
 
 * [1]: Terraform scripts: https://github.com/openmessaging/benchmark/blob/master/driver-kafka/deploy/hdd-deployment See `provision-kafka-aws.tf` and `alicloud/provision-kafka-alicloud.tf`

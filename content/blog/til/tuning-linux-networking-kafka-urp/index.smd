@@ -85,6 +85,7 @@ It's worth mentioning as well that these optimizations come with their own trade
 - Increased resource utilization: more memory used to keep the flow entries stored, overhead of additional flow hash calculation, and packets using all CPUs.
 - System-specific benefits: while these optimizations have helped on Kafka high-load clusters (e.g., >100MB/s in/out), their benefits will be dependent on the hardware, workload, and traffic patterns. For instance, at a certain point the flow hash calculation may be detrimental to the latency compared to simpler configuration on some hardware.
 
+[]($section.id('refs')
 ## References
 
 - [1] Kafka documentation for OS tuning: <https://kafka.apache.org/documentation/#os>

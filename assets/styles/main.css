@@ -193,6 +193,16 @@ blockquote {
   font-style: italic;
 }
 
+/* refs */
+#refs li {
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;  /* Add space between references */
+}
+
+#refs code {
+  font-size: 0.9rem;
+}
+
 /* Code blocks */
 pre, code {
   font-family: 'JetBrains Mono', monospace;

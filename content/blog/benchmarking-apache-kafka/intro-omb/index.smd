@@ -207,7 +207,8 @@ While benchmarking tools are typically associated with large-scale production en
 In upcoming posts, I'll explore other aspects of my Kafka performance testing journey including deep dives into OMB execution modes, specific Kafka feature testing, and broker profiling techniques.
 
 
-## [References]($section.id('references'))
+[]($section.id('refs'))
+## References
 
 - OpenMessaging Benchmark: The documentation lacks some level of detail, and there are few details that require diving into the code to figure out.
   - Documentation: https://openmessaging.cloud/docs/benchmarks/

@@ -59,7 +59,8 @@ These include deploying a Kafka cluster and Zookeeper ensemble, and the OMB work
 Although these are useful, they would mostly serve as a template to start with as you will need to adjust the scripts to fit your environment
 (e.g., remove Kafka cluster deployment as you may already have one to test, adjust versions, instrumenting workers with metrics agents and profilers, etc.).
 
-To run them as containers, OMB repository also provides a Helm chart[[11](https://github.com/openmessaging/benchmark/tree/master/deployment/kubernetes/helm)]
+To run them as containers, OMB repository also includes 
+a Helm chart[[11](https://github.com/openmessaging/benchmark/tree/master/deployment/kubernetes/helm)]
 to deploy workers on a Kubernetes cluster.
 
 To start a worker, run the following command defining the main port and the port for Prometheus stats collection:
@@ -73,12 +74,12 @@ To start a worker, run the following command defining the main port and the port
 The stats endpoint only contains OMB and JVM metrics in Prometheus format; however it does not include Kafka client specific metrics.
 Prometheus JMX exporter could be used to gather these.
 
-When running the CLI, the workers list have to be provided either by listing them directly:
+When running the CLI, the workers list have to be set either by listing them directly:
 
 ```bash
 ./bin/benchmark \
     --workers http://worker1:8080,http://worker2:8080 \
-    --driver driver.yaml \
+    --drivers driver.yaml \
     workload.yaml
 ```
 
@@ -87,7 +88,7 @@ Or passing them from a file:
 ```bash
 ./bin/benchmark \
     --worker-file workers.yaml \
-    --driver driver.yaml \
+    --drivers driver.yaml \
     workload.yaml
 ```
 
@@ -97,6 +98,24 @@ workers:
   - http://worker1:8080
 ```
 
+### Resource requirements
+
+The resource requirements for the workers depend on the workload you are trying to run.
+Over-provisioned instances are usually used in public benchmarks to ensure that the workers are not the bottleneck of the benchmark, here are some examples:
+
+> For each test, we did three runs of each workload, each with a 30-minute warm-up. For the clients, we ran on four m5n.8xlarge instances, which ensured guaranteed 25Gbps network bandwidth with 128GB of RAM and 32 vCPUs to ensure our clients were not the bottleneck.
+>
+> [Redpanda vs. Kafka: A performance comparison](https://www.redpanda.com/blog/redpanda-vs-kafka-performance-benchmark)
+
+> Finally, we used m6in.4xl instances to run the WarpStream Agents and m6in.8xl instances to run the openmessaging benchmark (intentionally overprovisioned to avoid any bottlenecks in the clients).
+>
+> [Warpstream Public Benchmarks and TCO analysis](https://www.warpstream.com/blog/warpstream-benchmarks-and-tco)
+
+For smaller workloads, you can use smaller instance types (e.g., m5.large) to reduce costs.
+
+When running these load tests regularly, cloud spot instances could be used to reduce costs as long as you are aware of the risks of having them terminated during the test.
+Usually the benchmark period is short enough to ensure that the spot instances are not terminated, but this is not guaranteed.
+
 ## Client distribution
 
 Any benchmark workload includes a set of producers and consumers, and these need to be assigned to specific workers.
@@ -105,7 +124,7 @@ This means that a Worker can be either a producer or a consumer, but not both.
 > This is the first limitation when trying to run a workload on a distributed setup: the minimum number of workers is 2: one for producers and another for consumers.
 
 The number of workers will be split in half between producers and consumers
----unless you have a specific type of workload that requires more consumers than producers, where you can assign extra workers to consumers (2/3 consumers, 1/3 producers)
+---unless you have a specific type of workload that requires more consumers than producers (like Consumer Backlog that will be explored on the next post), where you can assign extra workers to consumers (2/3 consumers, 1/3 producers)
 [[3](https://github.com/openmessaging/benchmark/blob/8f7d5d65ef63d87140b5908945df4b2bfdd4645a/benchmark-framework/src/main/java/io/openmessaging/benchmark/worker/DistributedWorkersEnsemble.java#L67-L74)].
 
 ```markdown
@@ -141,8 +160,9 @@ OMB workers are usually deployed in the same network as the Kafka cluster to min
 (e.g., same cloud region, and probably using private IPs to reduce inter-AZ costs[[4](https://blog.2minutestreaming.com/p/basic-aws-networking-costs)]) 
 .
 
-Running Kafka clusters in a single rack/zone reduces the availability promises of the system.
-This is why it is recommended to run Kafka clusters across multiple racks/zones to ensure high availability; although the latencies and--specially--the costs attached to this setup are considerably higher
+Running Kafka clusters in a single rack/zone reduces the availability promise of the system.
+This is why it is recommended to run Kafka clusters across multiple racks/zones to ensure high availability; 
+although the latencies and--specially--the costs attached to this setup are considerably higher
 [[10](https://blog.2minutestreaming.com/p/the-real-apache-kafka-cost)].
 
 If running clusters on a single rack (e.g., in a single Availability Zone), the default setup may suffice to distribute the load across workers.
@@ -153,7 +173,7 @@ More recently, Kafka-compatible systems that support leaderless producers with A
 (e.g., Warpstream[[5](https://docs.warpstream.com/warpstream/byoc/configure-kafka-client/configure-clients-to-eliminate-az-networking-costs)]),
 use the `client.id` to gather this metadata from.
 
-There is a hidden (i.e. undocumented[[13](https://github.com/openmessaging/benchmark/pull/426)]) feature in OMB to define a Java system property `zone.id`:
+There is a hidden (i.e., undocumented[[13](https://github.com/openmessaging/benchmark/pull/426)]) feature in OMB to define a Java system property `zone.id`:
 
 ```bash
 export JVM_OPTS=-Dzone.id={{ az }}
@@ -204,10 +224,11 @@ When distributing workers across zones, consider having `N * zones` workers---wh
  Consumer       Consumer       Consumer
   AZ0             AZ1             AZ2
    |               |               |
-   |---------------|---------------|
    v               v               v
 [Broker 0]     [Broker 1]      [Broker 2]
   AZ0             AZ1             AZ2
+   ^               ^               ^
+   |---------------|---------------|
 ```
 
 ## Workload topology
@@ -271,6 +292,28 @@ In some scenarios the workers may be the bottleneck of the benchmark (e.g., smal
 Low level metrics (e.g., CPU, memory, network, disk) can help identify these issues,
 but it is useful to monitor the worker client-level metrics (e.g., producer/consumer lag, throughput, etc.) 
 to identify bottlenecks at the client level; for instance using Prometheus JMX exporter.
+
+If a benchmark breaks in the middle of an execution, it may not be obvious.
+For instance, at some point the throughput may drop to 0, but the benchmark may not be stopped.
+This is because the benchmark is still running, but the workers have stalled.
+You will need to check the logs and look into your Kafka cluster to identify the issue.
+
+After starting a benchmark, and create the topics, topics will stay there---even if the benchmark is stopped or broken.
+If needed, make sure to add a cleanup step to remove the topics created by the benchmark.
+
+After running multiple benchmarks, I needed a way to identify _which_ topics were created by the benchmark as all of them follow the same naming convention,
+so I have this [patch](https://github.com/openmessaging/benchmark/pull/413)
+on my fork to log the topic names created by the benchmark.
+
+## Conclusion
+
+In this post we have covered how to deploy OMB workers across multiple nodes,
+how to distribute them across zones, and how to define the workload topology.
+We have also covered some of the common issues you may encounter when running a distributed benchmark.
+
+This is the second post in a series about benchmarking Apache Kafka using OMB.
+In the next post we will look into how to define the workload and experiment with different workload types.
+This should cover how the benchmark execution phases work, how to define the workload type, and how do they look like.
 
 ## References
 

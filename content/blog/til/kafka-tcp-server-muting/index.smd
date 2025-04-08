@@ -18,6 +18,7 @@ At the Socket level, Kafka enforces a single-request processing per connection m
 This means that a socket connection is _muted_ after picking a request from the socket, 
 until the response is served.
 Then it is unmuted and the next request is picked from the socket.
+This applies to all APIs.
 
 This design decision has significant implications for Kafka's performance and scalability,
 as it allows for efficient use of system resources and reduces the overhead of context switching
@@ -26,7 +27,7 @@ For the Kafka's traditional processing model,
 where data is mostly written and read from memory (i.e., page cache) this is not a problem;
 though when a cluster is stretched over multiple datacenters,
 or flushing data to disk is required,
-this design decision may lead to performance bottlenecks.
+this design decision may lead to performance bottlenecks where tail latency is magnified by the constraint of processing single produce requests.
 
 On the client-side, 
 there is the possibility of using the `max.in.flight.requests.per.connection` configuration 
@@ -39,9 +40,12 @@ and the broker will process them one by one.
 This is an important finding if you are looking into performance optimization for Kafka,
 and it is worth considering when designing and tuning your Kafka-based applications.
 It makes us wonder if this design could be upgraded
-to allow for multiple requests to be processed in parallel when the broker would benefit from it;
+to allow for multiple requests
+---at least at the produce API requests---
+to be processed in parallel when the broker would benefit from it;
 or if the dependency on the socket level muting mechanism is too strong to allow for this change
----it also makes me wanto to look deeper into the socket server implementation; may write about it later.
+---it also makes me want to look deeper into the socket server implementation.
+May write about it later.
 
 
 []($section.id('refs'))

@@ -14,20 +14,19 @@
 While working on Kafka internals, 
 our team (thanks [Ivan](https://x.com/ivan0yu)!) found an important design decision made by the Kafka community 
 regarding the TCP server processing pipeline:
-At the Socket level, Kafka enforces a single-request processing per connection mechanism.
-This means that a socket connection is _muted_ after picking a request from the socket, 
-until the response is served.
+At the socket level, Kafka enforces a mechanism that processes **only one request per connection** at a time.
+This means that a socket connection is _muted_ after picking a request from the socket until the response is served.
 Then it is unmuted and the next request is picked from the socket.
 This applies to all APIs.
 
 This design decision has significant implications for Kafka's performance and scalability,
 as it allows for efficient use of system resources and reduces the overhead of context switching
 while limiting clients.
-For the Kafka's traditional processing model, 
+For Kafka's traditional processing model, 
 where data is mostly written and read from memory (i.e., page cache) this is not a problem;
 though when a cluster is stretched over multiple datacenters,
 or flushing data to disk is required,
-this design decision may lead to performance bottlenecks where tail latency is magnified by the constraint of processing single produce requests.
+this design decision may lead to performance bottlenecks where tail latency is magnified by the constraint of processing produce requests one at a time.
 
 On the client-side, 
 there is the possibility of using the `max.in.flight.requests.per.connection` configuration 
@@ -43,9 +42,9 @@ It makes us wonder if this design could be upgraded
 to allow for multiple requests
 ---at least at the produce API requests---
 to be processed in parallel when the broker would benefit from it;
-or if the dependency on the socket level muting mechanism is too strong to allow for this change
----it also makes me want to look deeper into the socket server implementation.
-May write about it later.
+or if the dependency on the socket level muting mechanism is too strong to allow for this change.
+It also makes me want to look deeper into the socket server implementation.
+I may write about it later.
 
 
 []($section.id('refs'))

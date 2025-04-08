@@ -23,7 +23,7 @@ This design decision has significant implications for Kafka's performance and sc
 as it allows for efficient use of system resources and reduces the overhead of context switching
 while limiting clients.
 For the Kafka's traditional processing model, 
-where data is written and read from memory this is not a problem;
+where data is mostly written and read from memory (i.e., page cache) this is not a problem;
 though when a cluster is stretched over multiple datacenters,
 or flushing data to disk is required,
 this design decision may lead to performance bottlenecks.

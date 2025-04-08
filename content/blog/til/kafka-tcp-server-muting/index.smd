@@ -42,3 +42,10 @@ It makes us wonder if this design could be upgraded
 to allow for multiple requests to be processed in parallel when the broker would benefit from it;
 or if the dependency on the socket level muting mechanism is too strong to allow for this change
 ---it also makes me wanto to look deeper into the socket server implementation; may write about it later.
+
+
+[]($section.id('refs'))
+## References
+
+* SocketServer muting source code: https://github.com/apache/kafka/blob/9a2b8b6025ba283ba6e974918bfb1fecf4f24596/core/src/main/scala/kafka/network/SocketServer.scala#L1062
+

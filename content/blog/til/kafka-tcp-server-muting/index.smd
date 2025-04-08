@@ -12,7 +12,7 @@
 ---
 
 While working on Kafka internals, 
-my team (thanks [Ivan](https://x.com/ivan0yu)!) found an important design decision made by the Kafka community 
+our team (thanks [Ivan](https://x.com/ivan0yu)!) found an important design decision made by the Kafka community 
 regarding the TCP server processing pipeline:
 At the Socket level, Kafka enforces a single-request processing per connection mechanism.
 This means that a socket connection is _muted_ after picking a request from the socket, 

@@ -31,13 +31,13 @@ this design decision may lead to performance bottlenecks where tail latency is m
 On the client-side, 
 there is the possibility of using the `max.in.flight.requests.per.connection` configuration 
 to allow for multiple requests to be in-flight at the same time.
-But this is not the case for the server-side.
-For instance, if a client sends 5 requests to a Kafka broker,
-the requests will be buffered in the socket,
-and the broker will process them one by one.
+Even though the client can send multiple requests to the broker,
+this does not mean that the broker will process them in parallel.
+The broker will buffer the requests in the socket,
+and process them one by one.
 
 This is an important finding if you are looking into performance optimization for Kafka,
-and it is worth considering when designing and tuning your Kafka-based applications.
+and it is worth considering when designing and tuning your Kafka-based applications---maybe a server-side max in-flight produce requests?
 It makes us wonder if this design could be upgraded
 to allow for multiple requests
 ---at least at the produce API requests---

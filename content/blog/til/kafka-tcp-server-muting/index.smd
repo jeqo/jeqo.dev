@@ -1,6 +1,6 @@
 ---
 .title = "TIL: Kafka Broker TCP server muting mechanism",
-.date = @date("2025-02-26"),
+.date = @date("2025-04-09"),
 .author = "Jorge Esteban Quilcate Otoya",
 .layout = "post.shtml",
 .tags = [

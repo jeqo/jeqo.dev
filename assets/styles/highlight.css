@@ -349,3 +349,78 @@ code.java .operator {
   color: var(--light-red);
 }
 
+// SQL
+code.sql {
+  color: var(--comment-gray); /* Default text color */
+}
+
+/* SQL keywords like SELECT, FROM, WHERE, JOIN, etc. */
+code.sql .keyword {
+  color: var(--light-red);
+}
+
+/* Table names */
+code.sql .table {
+  color: var(--light-yellow);
+}
+
+/* Column names */
+code.sql .column {
+  color: var(--cyan);
+}
+
+/* Functions like COUNT(), SUM(), etc. */
+code.sql .function {
+  color: var(--blue);
+}
+
+/* String literals */
+code.sql .string {
+  color: var(--dark-yellow);
+}
+
+/* Numeric constants */
+code.sql .numeric.constant {
+  color: var(--magenta);
+}
+
+/* Operators (+, -, *, /, =, <>, etc.) */
+code.sql .operator {
+  color: var(--light-red);
+}
+
+/* Parentheses, commas, etc. */
+code.sql .punctuation {
+  color: var(--cyan);
+}
+
+/* Database/schema names */
+code.sql .database {
+  color: var(--light-yellow);
+}
+
+/* Aliases (AS keyword and alias identifiers) */
+code.sql .alias {
+  color: var(--dark-yellow);
+}
+
+/* Comments */
+code.sql .comment {
+  color: var(--comment-gray);
+}
+
+/* Boolean literals (TRUE, FALSE) */
+code.sql .boolean.constant {
+  color: var(--light-red);
+}
+
+/* Special SQL values like NULL, CURRENT_TIMESTAMP */
+code.sql .special {
+  color: var(--magenta);
+}
+
+/* Data types like VARCHAR, INTEGER, etc. */
+code.sql .type {
+  color: var(--light-yellow);
+}
+

@@ -1,13 +1,13 @@
 ---
 .title = "TIL: PostgreSQL explicit locking modes",
-.date = @date("2025-04-03"),
+.date = @date("2025-04-30"),
 .author = "Jorge Esteban Quilcate Otoya",
 .layout = "post.shtml",
 .tags = [
   "til",
   "postgres",
 ],
-.draft = true,
+.draft = false,
 ---
 
 While working on a distributed application using PostgreSQL as coordinator, 

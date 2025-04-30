@@ -1,0 +1,71 @@
+---
+.title = "TIL: PostgreSQL explicit locking modes",
+.date = @date("2025-04-03"),
+.author = "Jorge Esteban Quilcate Otoya",
+.layout = "post.shtml",
+.tags = [
+  "til",
+  "postgres",
+],
+.draft = true,
+---
+
+While working on a distributed application using PostgreSQL as coordinator, 
+I got to know Postgres' sophisticated locking mechanisms.
+I haven't work much with Postgres in the past apart from traditional CRUD applications where transactional boundaries (`BEGIN`, `COMMIT`, `ROLLBACK`) were enough to define correctness on the operations;
+but recently I was presented with a requirement to ensure a query result will return values _only if_ the matching records were not being modified (inserted/updated/deleted)---_even by_ a concurrent transaction.
+
+"Regular" transactions give a serializable point in time where the queries or changes executed take only the previously committed values as facts by using implicit locks.
+But, what happens when _someone else_ is applying changes to related values concurrently?
+Here is where locking modes become important.
+
+I got to know a couple of lock modes [[1](https://www.postgresql.org/docs/17/explicit-locking.html)] that I found useful:
+
+`FOR UPDATE` helps to lock an existing record(s) to be modified.
+This is useful if you are making changes to certain rows and want to explictly hold a lock while these are being modified concurrently.
+Let's say you are modifying addresses related to a user. 
+You may want to lock the user while inserting rows to the addresses table---so no other transaction can modify the user while you are inserting the addresses.
+
+```sql
+SELECT *
+FROM users
+WHERE id = ...
+FOR UPDATE
+INTO user;
+
+-- continue with transaction
+```
+
+`FOR SHARE` is a bit more specialized case of locking:
+Let's say you have a `files` table that is referenced from a transaction.
+How to ensure that a file is not being referenced by any transaction?
+One would expect that a transactional modification may be enough.
+
+But what if the transactions updating the references to this object are running concurrently?
+What if at the moment that a deletion check is happening, another transaction is already modifying it?
+How would your transaction "know" about the changes happening in another transaction?
+
+Here's where `FOR SHARE` could be useful:
+This locking mode will hold a lock (i.e. wait) 
+if there is a modification (e.g. insert) happening on rows matching the `where` condition.
+
+In this case, if there is a file being inserted as part of the
+commit, then the `for share` select will hold until the transaction has
+been commit/rollback to return a result.
+
+```sql
+SELECT id
+FROM files
+WHERE path = ...
+FOR SHARE;
+```
+
+I've ignored these locking modes given the usually enough transactional guarantees that databases offer; 
+but having dive into this level of sophistication on Postgres I get to appreciate it's power much more.
+
+
+[]($section.id('refs'))
+## References
+
+- [1] PostgreSQL explicit locking modes: https://www.postgresql.org/docs/17/explicit-locking.html
+

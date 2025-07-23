@@ -18,7 +18,7 @@ a macro-benchmarking framework for measuring messaging system performance,
 and how to use it on Apache Kafka deployments.
 
 OpenMessaging Benchmark (OMB) is an industry-standard framework that emerged from the collaborative efforts of messaging platform providers to create consistent, reproducible performance measurements; 
-and it has become a trusted tool used by major vendors[[1]](#references) to validate their platform performance claims.
+and it has become a trusted tool used by major vendors[[1]](#refs) to validate their platform performance claims.
 
 OMB's architecture consists of three main components:
 

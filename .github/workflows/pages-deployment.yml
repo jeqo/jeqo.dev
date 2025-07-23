@@ -16,27 +16,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      # Cache Zig dependencies and build artifacts
-      - name: Cache Zig dependencies
-        uses: actions/cache@v3
+      - name: Setup Zine
+        uses: kristoff-it/setup-zine@v1
         with:
-          path: |
-            .zig-cache
-            zig-out
-            ~/.cache
-          key: ${{ runner.os }}-zig-${{ env.ZIG_VERSION }}-${{ hashFiles('build.zig', 'build.zig.zon') }}
-          restore-keys: |
-            ${{ runner.os }}-zig-${{ env.ZIG_VERSION }}-
-            ${{ runner.os }}-zig-
-      # Install Zig
-      - name: Install Zig
-        uses: goto-bus-stop/setup-zig@v2
-        with:
-          version: ${{ env.ZIG_VERSION }}
-      # Build your website
-      - name: Build site
-        run: |
-          zig build --summary new
+          version: v0.10.4
+      - name: Release
+        run: zine release
       - name: Publish
         uses: cloudflare/pages-action@v1
         with:
@@ -44,5 +29,5 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           projectName: jeqo-dev
-          directory: ./zig-out
+          directory: ./public
 

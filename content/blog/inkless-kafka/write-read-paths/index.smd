@@ -13,8 +13,31 @@ but move that responsibility to a distributed remote storage system (e.g. AWS S3
 
 Having worked on this codebase for more than a year now and iterated on some of its features,
 it feels like a good time to start sharing more about it.
+Specially now that we are working on integrating the Inkless sub-system with Kafka Tiered Storage.
 
 ## Overall architecture
 
+The Inkless sub-system is built on two main components:
+A _data plane_ component in charge of the partition's read and write paths to remote storage,
+enabling brokers to access _any topic partition_ without relying on Kafka's partition leadership or replication.
+And the _control plane_ component to centralize the metadata storage (batch coordinates, remote files, etc.)
+// this part feels a bit weak
+to ensure Kafka's log semantics: append-only, sequential order. // maybe let's elaborate a bit more here.
+In its current version, the control plane is backed by a Postgres database.
 
+## Terminology
+
+Some common concepts to understand Inkless better:
+
+- Topics, Partitions, and Replicas
+- Records and Record Batches
+- Local and Remote files
+
+## Write path
+
+## Read path
+
+## Open questions
+
+- 
 

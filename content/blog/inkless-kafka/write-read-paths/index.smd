@@ -1,0 +1,20 @@
+---
+.title = "Inkless Kafka's read and write paths",
+.date = @date("2026-01-27"),
+.draft = true,
+---
+
+Inkless Kafka is Aiven's Apache Kafka fork introducing an storage sub-system for _Diskless_ topics.
+Compared to _Classic_ topics, Diskless topics do not rely on the local filesystem and Kafka replication, 
+but move that responsibility to a distributed remote storage system (e.g. AWS S3).
+
+> This fork is an implementation for the KIP-1150 proposal which is being voted by the community,
+> and should inspire the upstreaming of this feature if adopted.
+
+Having worked on this codebase for more than a year now and iterated on some of its features,
+it feels like a good time to start sharing more about it.
+
+## Overall architecture
+
+
+

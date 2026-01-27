@@ -8,12 +8,23 @@ Inkless Kafka is Aiven's Apache Kafka fork introducing an storage sub-system for
 Compared to _Classic_ topics, Diskless topics do not rely on the local filesystem and Kafka replication, 
 but move that responsibility to a distributed remote storage system (e.g. AWS S3).
 
+It does this on the promise of reducing costs (highly driven by Networking costs when crossing zones)
+and operational complexity (no rebalancing for diskless topics, faster scalability).
+
 > This fork is an implementation for the KIP-1150 proposal which is being voted by the community,
 > and should inspire the upstreaming of this feature if adopted.
 
 Having worked on this codebase for more than a year now and iterated on some of its features,
 it feels like a good time to start sharing more about it.
 Specially now that we are working on integrating the Inkless sub-system with Kafka Tiered Storage.
+
+## Terminology
+
+Some common concepts to understand Inkless better:
+
+- Topics, Partitions, and Replicas
+- Records and Record Batches
+- Local Log segment files and Remote shared WAL segment files
 
 ## Overall architecture
 
@@ -25,17 +36,41 @@ And the _control plane_ component to centralize the metadata storage (batch coor
 to ensure Kafka's log semantics: append-only, sequential order. // maybe let's elaborate a bit more here.
 In its current version, the control plane is backed by a Postgres database.
 
-## Terminology
-
-Some common concepts to understand Inkless better:
-
-- Topics, Partitions, and Replicas
-- Records and Record Batches
-- Local and Remote files
-
 ## Write path
 
+### Kafka 
+
 ## Read path
+
+## Performance and Cost considerations
+
+Remote, AWS S3-like, storage systems on their standard multi-AZ versions
+(I will not cover their single-zone variants)
+tend to be cheap on storage capacity; but penalize high request rates.
+This means that the smaller the files, the more PUT requests to upload them.
+
+Similarly, the more fragmented the objects (e.g., many partitions on the same object) 
+leads to potentially more GET requests to access different ranges from the same file.
+
+The price of GET requests are usually 10% of PUT requests; 
+so even though cheaper, you don't want to overlook into this difference.
+
+This starts painting the ideal case for Inkless:
+
+### Optimized for throughput
+
+Large batches mean faster time to WAL object limit, reducing latency.
+Large batches mean less batches per WAL object, reducing costs.
+Large batches mean less batch metadata to commit, reducing load on Metadata storage.
+Large batches mean less batches needed to build fetch responses, reducing latency.
+
+### Scalability challenges
+
+On the other hand, small batches have the contrary effect, and so far there isn't so much we can do about it:
+
+Small batches, even in high throughput scenarios, lead to // left here
+
+### Tiered Storage and the solution to Inkless capacity problems
 
 ## Open questions
 
